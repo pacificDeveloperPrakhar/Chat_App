@@ -3,10 +3,11 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" }); // Load environment variables from config.env file
 const app=require("./src/app.js")
 const http = require("http");
-const server = http.createServer(app); // Create an HTTP server using the Express app
-
-const host = process.env.host; // Host for the server from environment variables
-const port = process.env.port; // Port for the server from environment variables
+const server = http.createServer(app); 
+// importing the connection file to connect with the postgres databse
+const db_postgres=require("./src/db/db_connection.js")
+const host = process.env.host; 
+const port = process.env.port; 
 
 // If there is an unhandled promise rejection, log the error and shut down the server gracefully
 process.on("unhandledRejection", (err) => {
