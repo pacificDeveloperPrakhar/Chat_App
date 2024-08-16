@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "connect-mongo": "^5.1.0",
     "dotenv": "^16.4.5",
     "drizzle-kit": "^0.24.0",
@@ -17,6 +18,7 @@
     "express": "^4.19.2",
     "express-parser": "^1.0.0",
     "express-session": "^1.18.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.3",
     "nodemon": "^3.1.4",
     "pg": "^8.12.0",
