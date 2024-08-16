@@ -1,13 +1,19 @@
 const express=require("express")
-const profileSchema=require("./db/schema/schema.js")
-require("./db/migrate/migrate")
+const {users}=require("./db/schema/schema.js")
 const {db}=require("./db/db_connection")
 const app=express()
 app.use(express.json())
-app.use("/profile",async(req,res,next)=>{
-    const {email,username}=req.body
-const data=await db.insert(profileSchema).values({
-
+app.use("/profiles",async(req,res,next)=>{
+const {email,username,password}=req.body
+await db.delete(users)
+const data=await db.insert(users).values({
+email,
+username,
+password
+}).returning({
+    id:users.id,
+    sockets:users.socketConnected
 })
+res.status(200).json(data)
 })
 module.exports=app

@@ -1,6 +1,6 @@
 {
-  "id": "5a3eae82-db09-4380-812b-d971281af598",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "92773c88-86ea-417b-83c8-e0ccef7acb6d",
+  "prevId": "5a3eae82-db09-4380-812b-d971281af598",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -13,7 +13,7 @@
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "default": "'a69a0b44-6ec9-4ce8-908d-cb8ec9a6623f'"
+          "default": "'46453e03-d662-4539-b697-6559a0c120ef'"
         },
         "email": {
           "name": "email",
@@ -60,7 +60,7 @@
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "socket_connected": {
           "name": "socket_connected",
@@ -150,7 +150,7 @@
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "default": "'b94016b1-671a-4051-9626-12e561506538'"
+          "default": "'48bbe2a8-95c9-40f5-8acb-15d631ce8f49'"
         },
         "profile_id": {
           "name": "profile_id",

@@ -5,7 +5,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
-	"id" uuid PRIMARY KEY DEFAULT '2d445627-b3e2-4069-b03d-cefe22636e68' NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT 'a69a0b44-6ec9-4ce8-908d-cb8ec9a6623f' NOT NULL,
 	"email" varchar(256),
 	"username" varchar(256),
 	"is_verified" boolean DEFAULT false,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "verification_factors" (
-	"id" uuid PRIMARY KEY DEFAULT 'e1bda491-472b-4400-a708-b6e226c4c155' NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT 'b94016b1-671a-4051-9626-12e561506538' NOT NULL,
 	"profile_id" uuid,
 	"value" varchar(512) DEFAULT null,
 	"created_at" timestamp DEFAULT now(),

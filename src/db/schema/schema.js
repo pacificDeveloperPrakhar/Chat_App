@@ -15,7 +15,10 @@ const users = pgTable('users', {
   profileUrl: varchar('profile_url', { length: 512 }).default(null),
   userStatus: userStatusEnum('user_status').default('inactive'),  // Default value set to 'inactive'
   createdAt: timestamp('created_at').defaultNow(),  // Changed to defaultNow()
-  updatedAt: timestamp('updated_at').$default(()=>Date.now() + 10 * 60 * 1000),  // Changed to defaultNow()
+  // changed the timestamp syntax caution do not use the javascript database.now as it will raise the error
+  updatedAt: timestamp('updated_at')
+    .notNull()
+    .$onUpdate(() => new Date()),  
   socketConnected: jsonb('socket_connected').notNull().default('[]'),
   // Use JSONB for socket connections
   password:varchar("password").notNull()  ,
@@ -34,10 +37,10 @@ const users = pgTable('users', {
 // Creating the verification_factors table
 const verification_factors = pgTable('verification_factors', {
   id: uuid('id').default(uuidv4()).primaryKey(),  // Use UUID for ID
-  profileId: uuid('profile_id').references(() => users.id),  // Correctly references the users table by UUID
+  profileId: uuid('profile_id').references(() => users.id),  
   value: varchar('value', { length: 512 }).default(null),
-  createdAt: timestamp('created_at').defaultNow(),  // Changed to defaultNow()
-  expiresAt: timestamp('expires_at').defaultNow(),  // Changed to defaultNow()
+  createdAt: timestamp('created_at').defaultNow(),  
+  expiresAt: timestamp('expires_at').defaultNow(),  
   isValid: boolean('is_valid').default(true),
   isUsed: boolean('is_used').default(false)
 }, (verification_factors) => {

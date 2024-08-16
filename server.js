@@ -6,6 +6,7 @@ const http = require("http");
 const server = http.createServer(app); 
 // importing the connection file to connect with the postgres databse
 const db_postgres=require("./src/db/db_connection.js")
+require("./src/db/migrate/migrate")
 const host = process.env.host; 
 const port = process.env.port; 
 
