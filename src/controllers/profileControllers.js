@@ -15,18 +15,27 @@ exports.signup=catchAsync(async(req,res,next)=>{
     password=await bcrypt.hash(password,10);
     //checking the credentials
     const {isValid,message}=validateProfile(req.body)
+    const profile=(await db.select().from(users).where(eq(users.email, email)))[0];
+    if(profile&&!profile?.is_verified)
+        {   req.session.userId=profile.id
+            req.isSignup=true
+            return next()
+        }
     if(!isValid)
         return next(new appError(message,400))
-
+    
     const data=await db.insert(users).values({
-    email,
-    username,
-    password
+        email,
+        username,
+        password
     }).returning({
         id:users.id,
         sockets:users.socketConnected
     })
-    res.status(200).json(data)
+    req.session.userId=data.id
+    req.isSignup=true
+    next()
+     
     })
 // this controller will retrieve all the user data rows stored in the data base 
 // also this is to make sure that user is displayed with only relevant data
@@ -76,7 +85,7 @@ exports.login = catchAsync(async function (req, res, next) {
     if (!password) return next(new appError("Password parameter is missing", 400));
     
     // Find the user profile by email
-    const profile= await db.select().from(users).where(eq(users.email,email))
+    const profile= (await db.select().from(users).where(eq(users.email,email)))[0]
     
     // Check if the profile exists and the password is correct
     if (!profile) {

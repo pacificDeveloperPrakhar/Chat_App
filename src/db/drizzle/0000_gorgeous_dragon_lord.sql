@@ -4,15 +4,22 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "fruits" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"color" varchar(100) NOT NULL,
+	"quantity" integer NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
-	"id" uuid PRIMARY KEY DEFAULT 'a69a0b44-6ec9-4ce8-908d-cb8ec9a6623f' NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"email" varchar(256),
 	"username" varchar(256),
 	"is_verified" boolean DEFAULT false,
 	"profile_url" varchar(512) DEFAULT null,
 	"user_status" "user_status" DEFAULT 'inactive',
 	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp,
+	"updated_at" timestamp NOT NULL,
 	"socket_connected" jsonb DEFAULT '[]' NOT NULL,
 	"password" varchar NOT NULL,
 	"password_reset_token" varchar(255) DEFAULT null,
@@ -22,7 +29,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "verification_factors" (
-	"id" uuid PRIMARY KEY DEFAULT 'b94016b1-671a-4051-9626-12e561506538' NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"profile_id" uuid,
 	"value" varchar(512) DEFAULT null,
 	"created_at" timestamp DEFAULT now(),
@@ -32,7 +39,7 @@ CREATE TABLE IF NOT EXISTS "verification_factors" (
 );
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "verification_factors" ADD CONSTRAINT "verification_factors_profile_id_users_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "verification_factors" ADD CONSTRAINT "verification_factors_profile_id_users_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE cascade;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

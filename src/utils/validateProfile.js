@@ -23,13 +23,11 @@ const validateProfile = ({ email, password, confirmPassword }) => {
   };
   // this password reset createing function is heplful when i intend to verify the password and also when i need to reset the password
   const createResetTokenPassword=async function({email}){
-   const profile= await db.select().from(products).where(eq(user.email,email))
+   const profile= (await db.select().from(users).where(eq(users.email,email)))[0]
    const resetToken = crypto.randomBytes(32).toString('hex');
   
   profile.passwordResetToken= await bcrypt.hash(resetToken,10);
   
-  // console.log({ resetToken }, this.passwordResetToken);
-  console.log("token being send after hashing",resetToken)
   // add when this password reset will expire
   profile.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000);
   //now save the changes
@@ -37,8 +35,8 @@ const validateProfile = ({ email, password, confirmPassword }) => {
   .update(users)
   .set(profile)
   .returning({
-    id: products.id
-  });
+    id: users.id
+  }).where(eq(profile.id,users.id));
   return {resetToken,id};
   }
   // function to compare the password when the user enters the credentials to login which will take the email and password
@@ -53,10 +51,11 @@ const validateProfile = ({ email, password, confirmPassword }) => {
   // i know its a bad code practice and i should rather had used the same comapare function
   // but it was much easier to create a new funciton than modifying the previous one
   //
-  const compareResetToken = async function(providedToken) {
+  const compareResetToken = async function({email,providedToken}) {
     const profile= (await db.select({
       passwordResetToken:users.passwordResetToken
     }).from(users).where(eq(users.email,email)))[0]
+    console.log(providedToken)
     return await bcrypt.compare(providedToken,profile.passwordResetToken)
   };
   module.exports={validateProfile,createResetTokenPassword,compareResetToken,compareThePassword}

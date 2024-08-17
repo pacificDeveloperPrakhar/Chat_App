@@ -1,8 +1,18 @@
 const express=require("express")
 const {signup,getAllProfiles,getProfileById,login}=require("../controllers/profileControllers")
-const {issueToken}=require("../controllers/authenticationController")
+const {authenticateRequest, tokenGenerator}=require("../controllers/authenticationController")
+const {issueToken,authenticateVerification}=require("../controllers/authenticationController")
+const { sendMail } = require("../controllers/communicationController")
 const router=express.Router()
 router.route("/login").post(login,issueToken)
-router.route("/").post(signup).get(getAllProfiles)
+router.route("/authenticate").get(authenticateRequest,(req,res,next)=>{
+    res.status(200).json({
+        user:req.user,
+        message:"you have been authenticated"
+    })
+})
+router.route("/signup").post(signup,tokenGenerator,sendMail)
+router.route("/signup/:verifyId").get(authenticateVerification,issueToken)
+router.route("/").post(signup).get(getAllProfiles,tokenGenerator)
 router.route("/:userId").get(getProfileById)
 module.exports=router

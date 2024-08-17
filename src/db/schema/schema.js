@@ -8,7 +8,7 @@ const userStatusEnum = pgEnum('user_status', ['active', 'inactive', 'banned']);
 
 // Creating the users table
 const users = pgTable('users', {
-  id: uuid('id').default(uuidv4()).primaryKey(),  // Use UUID for ID
+  id: uuid('id').defaultRandom().primaryKey(),  // Use UUID for ID
   email: varchar('email', { length: 256 }).unique(),
   username: varchar('username', { length: 256 }).unique(),
   is_verified: boolean('is_verified').default(false),
@@ -36,8 +36,8 @@ const users = pgTable('users', {
 
 // Creating the verification_factors table
 const verification_factors = pgTable('verification_factors', {
-  id: uuid('id').default(uuidv4()).primaryKey(),  // Use UUID for ID
-  profileId: uuid('profile_id').references(() => users.id),  
+  id: uuid('id').defaultRandom().primaryKey(),  // Use UUID for ID
+  profileId: uuid('profile_id').references(() => users.id,{onDelete:"cascade",onUpdate:"cascade"}),  
   value: varchar('value', { length: 512 }).default(null),
   createdAt: timestamp('created_at').defaultNow(),  
   expiresAt: timestamp('expires_at').defaultNow(),  
@@ -46,9 +46,20 @@ const verification_factors = pgTable('verification_factors', {
 }, (verification_factors) => {
   return {};
 });
-
+// a dummy database
+const fruits = pgTable('fruits', {
+  id: uuid('id').defaultRandom().primaryKey(),         // Auto-incrementing primary key
+  name: varchar('name', { length: 255 })  // Fruit name, with a max length of 255 characters
+    .notNull(),
+  color: varchar('color', { length: 100 }) // Color of the fruit, with a max length of 100 characters
+    .notNull(),
+  quantity: integer('quantity')           // Quantity of the fruit
+    .notNull()
+}, (fruits) => {
+  return {}});
 // Exporting the modules using CommonJS
 module.exports = {
+  fruits,
   userStatusEnum,
   users,
   verification_factors

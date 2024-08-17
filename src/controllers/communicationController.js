@@ -1,6 +1,8 @@
 const catchAsync = require('../utils/catchAsync.js');
 const AppError=require("../utils/appErrors.js")
 const nodemailer=require("nodemailer")
+const path=require("path")
+const fs=require("fs")
 
   // Your sendMail function
   exports.sendMail = catchAsync(async (req, res, next) => {

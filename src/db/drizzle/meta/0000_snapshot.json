@@ -1,9 +1,44 @@
 {
-  "id": "5a3eae82-db09-4380-812b-d971281af598",
+  "id": "edf809d2-0c6a-472b-88ee-614700a0eed0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.fruits": {
+      "name": "fruits",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "color": {
+          "name": "color",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.users": {
       "name": "users",
       "schema": "",
@@ -13,7 +48,7 @@
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "default": "'a69a0b44-6ec9-4ce8-908d-cb8ec9a6623f'"
+          "default": "gen_random_uuid()"
         },
         "email": {
           "name": "email",
@@ -60,7 +95,7 @@
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "socket_connected": {
           "name": "socket_connected",
@@ -150,7 +185,7 @@
           "type": "uuid",
           "primaryKey": true,
           "notNull": true,
-          "default": "'b94016b1-671a-4051-9626-12e561506538'"
+          "default": "gen_random_uuid()"
         },
         "profile_id": {
           "name": "profile_id",
@@ -206,8 +241,8 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},

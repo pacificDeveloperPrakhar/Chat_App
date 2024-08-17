@@ -1,6 +1,8 @@
 const express=require("express")
 const profileRoutes=require("./routes/profileRoutes.js")
 const session = require('express-session');
+const {users,verification_factors,fruits}=require("./db/schema/schema.js")
+const {db}=require("./db/db_connection")
 const MongoStore = require('connect-mongo');
 const app=express()
 app.use(session({
@@ -20,4 +22,11 @@ app.use(session({
   }));
 app.use(express.json())
 app.use("/profiles",profileRoutes)
+app.post('/fruits',async (req,res,next)=>{
+  const {quantity,color,name}=req.body
+  const data=await db.insert(fruits).values({
+   name,color,quantity
+  })
+  res.send(data)
+})
 module.exports=app
