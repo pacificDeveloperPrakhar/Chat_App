@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { usersConnectionModify } from "../slices/userSlice";
 import io from "socket.io-client";
 import Avatar from '@mui/material/Avatar';
-import { FaInfoCircle, FaComments, FaSignInAlt, FaUser } from 'react-icons/fa'; // Import suitable icons
+import { MdInfo, MdChat, MdLogin, MdAccountCircle } from 'react-icons/md';
+import Tooltip from '@mui/material/Tooltip';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -31,30 +32,44 @@ const Header = () => {
 
   return (
     <nav
-      className="bg-orange-500 shadow-lg box-content h-full w-64 fixed left-0 top-0 flex flex-col justify-between text-white font-semibold"
-      style={{ boxSizing: 'border-box' }}
+      className="bg-orange-500 shadow-lg h-full fixed left-0 top-0 flex flex-col justify-between text-white font-semibold"
+      style={{ 
+        boxSizing: 'border-box',
+        boxShadow: '4px 0 8px rgba(0, 0, 0, 0.3)' // Shadow on the right side
+      }}
     >
       <div className="h-16 flex items-center justify-center bg-orange-600 w-full shadow-md">
-        <h2 className="text-xl">ChatBar</h2>
+        {/* No title or name here */}
       </div>
-      <ul className="flex flex-col justify-start items-start h-full w-full px-4 space-y-4 pt-4">
+      <ul className="flex flex-col justify-start items-start h-full w-full px-2 space-y-4 pt-4">
         <li className="hover:bg-orange-600 px-4 py-2 rounded transition duration-300 ease-in-out cursor-pointer w-full flex items-center space-x-2">
-          <FaInfoCircle />
-          <Link to="about">About</Link>
+          <Tooltip title="About">
+            <Link to="about">
+              <MdInfo size={30} /> {/* Material icon */}
+            </Link>
+          </Tooltip>
         </li>
         <li className="hover:bg-orange-600 px-4 py-2 rounded transition duration-300 ease-in-out cursor-pointer w-full flex items-center space-x-2">
-          <FaComments />
-          <Link to="chat">Chat</Link>
+          <Tooltip title="Chat">
+            <Link to="chat">
+              <MdChat size={30} /> {/* Material icon */}
+            </Link>
+          </Tooltip>
         </li>
         <li className="hover:bg-orange-600 px-4 py-2 rounded transition duration-300 ease-in-out cursor-pointer w-full flex items-center space-x-2">
-          <FaSignInAlt />
-          <Link to="form">Sign in</Link>
+          <Tooltip title="Sign In">
+            <Link to="form">
+              <MdLogin size={30} /> {/* Material icon */}
+            </Link>
+          </Tooltip>
         </li>
       </ul>
-      <div className="mb-4 px-4 flex items-center space-x-2">
+      <div className="mb-4 px-2 flex items-center space-x-2">
+        <Tooltip title="Dashboard">
         <Avatar alt={user.username} src={user.profileUrl} />
-        <FaUser />
-        <Link to="dashboard">{user.username}</Link>
+          <Link to="dashboard">
+          </Link>
+        </Tooltip>
       </div>
     </nav>
   );

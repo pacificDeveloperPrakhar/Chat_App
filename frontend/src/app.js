@@ -5,7 +5,6 @@ import AppLayout from './layout/AppLayout';
 import ProtectedRoute from './utils/ProtectedRoute';
 import Form from './component/Form'
 import Dashboard from './component/Dashboard';
-import SideChatBar from "./component/sideChatDrawer"
 import About from './component/About';
 import Chat from "./component/Chat";
 const routers = createBrowserRouter([
@@ -27,7 +26,7 @@ const routers = createBrowserRouter([
         element: <ProtectedRoute />,
         children:[{
           path: "about",
-          element: <SideChatBar />,
+          element: <About />,
         },
         {
           path: "dashboard",
