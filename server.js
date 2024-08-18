@@ -1,9 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" }); // Load environment variables from config.env file
-const app=require("./src/app.js")
-const http = require("http");
-const server = http.createServer(app); 
+const server=require("./src/app.js")
 // importing the connection file to connect with the postgres databse
 const db_postgres=require("./src/db/db_connection.js")
 require("./src/db/migrate/migrate")
@@ -77,5 +75,3 @@ process.on('SIGTERM', () => {
     });
   });
 });
-
-

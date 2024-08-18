@@ -1,6 +1,7 @@
 const catchAsync = require('../utils/catchAsync.js');
 const AppError=require("../utils/appErrors.js")
 const nodemailer=require("nodemailer")
+
 const path=require("path")
 const fs=require("fs")
 
@@ -44,8 +45,9 @@ const fs=require("fs")
       }
       console.log('Email sent: %s', info.messageId);
       console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-  
+      
       res.status(200).json({
+        user:req.profile||null,
         message: !req.isSignup?`Reset token has been sent to ${req.body.to}`:`to verify your email check the mail send to ${req.body.to}`
       });
     });

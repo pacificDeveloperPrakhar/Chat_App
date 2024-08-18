@@ -1,5 +1,5 @@
 const express=require("express")
-const {signup,getAllProfiles,getProfileById,login}=require("../controllers/profileControllers")
+const {signup,getAllProfiles,getProfileById,login,attachProfile}=require("../controllers/profileControllers")
 const {authenticateRequest, tokenGenerator}=require("../controllers/authenticationController")
 const {issueToken,authenticateVerification}=require("../controllers/authenticationController")
 const { sendMail } = require("../controllers/communicationController")
@@ -11,7 +11,7 @@ router.route("/authenticate").get(authenticateRequest,(req,res,next)=>{
         message:"you have been authenticated"
     })
 })
-router.route("/signup").post(signup,tokenGenerator,sendMail)
+router.route("/signup").post(signup,tokenGenerator,attachProfile,sendMail)
 router.route("/signup/:verifyId").get(authenticateVerification,issueToken)
 router.route("/").post(signup).get(getAllProfiles,tokenGenerator)
 router.route("/:userId").get(getProfileById)

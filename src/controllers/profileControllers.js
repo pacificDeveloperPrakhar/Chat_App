@@ -16,6 +16,7 @@ exports.signup=catchAsync(async(req,res,next)=>{
     //checking the credentials
     const {isValid,message}=validateProfile(req.body)
     const profile=(await db.select().from(users).where(eq(users.email, email)))[0];
+    
     if(profile&&!profile?.is_verified)
         {   req.session.userId=profile.id
             req.isSignup=true
@@ -102,3 +103,9 @@ exports.login = catchAsync(async function (req, res, next) {
      req.status=200
      next()
   });
+  
+  exports.attachProfile=catchAsync(async function (req,res,next) {
+    const profile=(await db.select().from(users).where(eq(users.email, req.body.email)))[0];
+    req.profile=profile
+    next()
+  })
