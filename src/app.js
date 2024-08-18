@@ -11,7 +11,7 @@ const server = http.createServer(app);
 const Socket = require('socket.io');
 const { user } = require("pg/lib/defaults.js");
 const { eq } = require("drizzle-orm");
-const { socketConnectedToUser, socketDisconnectedFromUser } = require("./utils/socketUtils.js");
+const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays } = require("./utils/socketUtils.js");
 
 // Initialize Express app
 
@@ -70,8 +70,9 @@ const io =  Socket(server, {
     cors: {
       origin: "*", // Allow all origins for development
       methods: ["GET", "POST"]
-    }
-  }).of("/chat");  
+    },
+    path:"/chat"
+  });  
 // setting up the session middleware for the socket incomming
 const sessionMiddleware = session({
     secret: process.env.SESSION_SECRET,
@@ -90,6 +91,7 @@ const sessionMiddleware = session({
   });
   // assigning a middlware for the incomming connection
   //this is to authenticate the connection
+  //
   io.use((socket, next) => {
     socket.request.user=JSON.parse(socket.handshake.headers.userid)
     next()
@@ -112,11 +114,12 @@ const sessionMiddleware = session({
     });
   
     // Handle user disconnects
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async() => {
+      console.log(socket.id,"it is disconnected")
+      await socketDisconnectedFromUser(socket?.request?.user?.id,socket.id)
       console.log('User disconnected:', socket.id);
-      socketDisconnectedFromUser(socket?.request?.user?.id,socket.id)
     });
   });
-  
+  clearSocketArrays()
 // Export the app module
 module.exports = server;

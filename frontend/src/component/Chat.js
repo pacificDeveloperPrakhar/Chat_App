@@ -12,10 +12,11 @@ const Chat = () => {
   // Listen for incoming messages 
   useEffect(() => {
     // Connect to the server (replace with your backend URL if deployed)
-      socket = io("http://127.0.0.1:1234/chat",{
+      socket = io("http://127.0.0.1:1234",{
      extraHeaders:{
      "userId":JSON.stringify(user)
-  }
+  },
+  path:"/chat"
 });
     socket.on("chatMessage", (msg) => {
       setMessages((prevMessages) => [...prevMessages, msg]);
