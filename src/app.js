@@ -105,12 +105,15 @@ const sessionMiddleware = session({
     // it will contain something
     const users=await getSocketUsers({})
     headerNmsp.emit("new_socket_connection",users)
+    console.log(socket.request.user)
     await socketConnectedToUser(socket?.request?.user?.id,socket.id)
     console.log("connected to the socket header namespace")
     // disconnecting from the user
     socket.on('disconnect', async() => {
       console.log(socket.id,"it is disconnected")
       await socketDisconnectedFromUser(socket?.request?.user?.id,socket.id)
+      const users=await getSocketUsers({})
+    headerNmsp.emit("new_socket_connection",users)
       console.log('User disconnected:', socket.id);
     });
   })
@@ -126,7 +129,7 @@ const sessionMiddleware = session({
   io.on('connection', async (socket) => {
 
   
-  
+  console.log("connected")
     // Listen for incoming chat messages
     socket.on('chatMessage', (msg) => {
       if (socket.user) {

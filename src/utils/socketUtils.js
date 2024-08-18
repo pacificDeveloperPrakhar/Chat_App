@@ -52,7 +52,7 @@ exports.getSocketUsers=async function ({userStatus}) {
     if(userStatus)
     usersArr=await db.select().from(users).where(eq(users.userStatus,userStatus));
     else
-    usersArr=await db.select().from(users).where();
-    return await userArr
+    usersArr=await db.select().from(users).where(eq(users.is_verified,true))
+    return await usersArr
     
 }

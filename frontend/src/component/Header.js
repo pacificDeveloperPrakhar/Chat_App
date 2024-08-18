@@ -17,19 +17,20 @@ useEffect(() => {
     },
     path: "/chat",
   });
-
+console.log("hii")
   // Listen for the 'new_socket_connected' event
-  socketHeader.on('new_socket_connected', (message) => {
+  socketHeader.on('new_socket_connection', (message) => {
     // Dispatch the action with the received message
+    console.log(message)
     dispatch(usersConnectionModify(message));
   });
 
   // Cleanup the socket connection on component unmount
   return () => {
-    socketHeader.off('new_socket_connected');
+    socketHeader.off('new_socket_connection');
     socketHeader.disconnect();
   };
-}, []);
+}, [dispatch,user]);
 
   return (
     <nav className="h-1/6 bg-orange-500 shadow-lg box-content py-4 overflow-hidden">
