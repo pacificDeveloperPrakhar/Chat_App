@@ -128,7 +128,7 @@ const Form = () => {
           )}
         </div>
       </div>
-      {info&&<Toast open={open} setOpen={setOpen} message={info.message}/>}
+      {info&&<Toast open={open} setOpen={setOpen} message={info.message&&`email has been sent to the ${user.email} check your email then come back`}/>}
     </div>
   );
 };

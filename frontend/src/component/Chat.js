@@ -8,10 +8,11 @@ const Chat = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const user=useSelector(state=>state.user.user)
+  let socket;
   // Listen for incoming messages 
   useEffect(() => {
     // Connect to the server (replace with your backend URL if deployed)
-     const socket = io("http://127.0.0.1:1234/chat",{
+      socket = io("http://127.0.0.1:1234/chat",{
      extraHeaders:{
      "userId":JSON.stringify(user)
   }

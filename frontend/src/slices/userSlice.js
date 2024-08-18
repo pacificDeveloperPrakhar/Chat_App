@@ -8,7 +8,7 @@ const userState = {
   error: null,
   isLoading: false,
   isAdding: false,
-  message:""
+  message:null
 };
 
 export const addUserAction = createAsyncThunk(

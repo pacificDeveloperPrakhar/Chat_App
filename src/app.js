@@ -9,6 +9,9 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app); 
 const Socket = require('socket.io');
+const { user } = require("pg/lib/defaults.js");
+const { eq } = require("drizzle-orm");
+const { socketConnectedToUser, socketDisconnectedFromUser } = require("./utils/socketUtils.js");
 
 // Initialize Express app
 
@@ -92,8 +95,13 @@ const sessionMiddleware = session({
     next()
     });
 
-  io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
+  io.on('connection', async (socket) => {
+    // this will help us to see if the user is online or offline
+    // if the user is offline then its socket array will be empty otherwise
+    // it will contain something
+    await socketConnectedToUser(socket?.request?.user?.id,socket.id)
+
+    console.log('A user connected:', socket.request.user);
   
   
     // Listen for incoming chat messages
@@ -106,6 +114,7 @@ const sessionMiddleware = session({
     // Handle user disconnects
     socket.on('disconnect', () => {
       console.log('User disconnected:', socket.id);
+      socketDisconnectedFromUser(socket?.request?.user?.id,socket.id)
     });
   });
   
