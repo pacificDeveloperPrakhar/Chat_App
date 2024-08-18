@@ -1,3 +1,4 @@
+const { user } = require("pg/lib/defaults");
 const { db } = require("../db/db_connection");
 const { users } = require("../db/schema/schema")
 const { eq } = require("drizzle-orm");
@@ -9,7 +10,7 @@ exports.socketConnectedToUser=async function(id,socketId){
     socket_connected.push(socketId)
     await db
     .update(users)
-    .set({ socketConnected:socket_connected })  // Store the updated array
+    .set({ socketConnected:socket_connected ,userStatus:"active"})  // Store the updated array
     .where(eq(users.id, id));
 }
 //this project is made by prakhar
@@ -27,11 +28,10 @@ exports.socketDisconnectedFromUser = async function(id, socketId) {
       if (user && Array.isArray(user.socket_connected)) {
           // Remove the socketId from the array
           const socket_connected = user.socket_connected.filter(id => id !== socketId);
-          
           // Update the user in the database with the modified socketIds array
           await db
           .update(users)
-          .set({ socketConnected:socket_connected })  // Store the updated array
+          .set({ socketConnected:socket_connected ,userStatus:(socket_connected.length?"active":"inactive")})  // Store the updated array
           .where(eq(users.id, id));
           
           console.log(`Socket ID ${socketId} removed for user with ID: ${id}`);
@@ -45,3 +45,14 @@ exports.socketDisconnectedFromUser = async function(id, socketId) {
   exports.clearSocketArrays=async function () {
     await db.update(users).set({socketConnected:[]})
   }
+
+//   now a socket function to get all the users and return them
+exports.getSocketUsers=async function ({userStatus}) {
+    let userArr
+    if(userStatus)
+    usersArr=await db.select().from(users).where(eq(users.userStatus,userStatus));
+    else
+    usersArr=await db.select().from(users).where();
+    return await userArr
+    
+}

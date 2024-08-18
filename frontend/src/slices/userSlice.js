@@ -63,7 +63,31 @@ export const loginUserAction = createAsyncThunk(
   }
 );
 
+const usersConnectionModify=reateAsyncThunk(
+  "user/modify",
+  async (payload, { rejectWithValue, getState, dispatch }) => {
+    console.log(payload)
+    try {
 
+
+         const config = {
+           headers: {
+             
+             "Content-Type": "application/json",
+           },
+         };
+      const { data } = await axios.post(
+        "http://127.0.0.1:1234/profiles/login",
+        payload,config
+      );
+      console.log(data)
+      return data;
+    } catch (err) {
+      console.log(JSON.parse(JSON.stringify(err)));
+      return (rejectWithValue( JSON.parse(JSON.stringify(err)),"error was seen"));
+    }
+  }
+);
 const userSlice = createSlice({
   name: "user",
   initialState: userState,

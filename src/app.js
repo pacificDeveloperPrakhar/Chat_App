@@ -11,7 +11,8 @@ const server = http.createServer(app);
 const Socket = require('socket.io');
 const { user } = require("pg/lib/defaults.js");
 const { eq } = require("drizzle-orm");
-const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays } = require("./utils/socketUtils.js");
+const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays ,getSocketUsers} = require("./utils/socketUtils.js");
+const { extractUser } = require("./controllers/socketController.js");
 
 // Initialize Express app
 
@@ -73,6 +74,8 @@ const io =  Socket(server, {
     },
     path:"/chat"
   });  
+// this namespace will be used for online and offline feature and also sending the users available  to the one user
+const headerNmsp=io.of("/%HEADERS%")
 // setting up the session middleware for the socket incomming
 const sessionMiddleware = session({
     secret: process.env.SESSION_SECRET,
@@ -89,21 +92,39 @@ const sessionMiddleware = session({
       maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
     },
   });
+  // this namespace will be used for online and offline feature and also sending the users available  to the one user
+
+  headerNmsp.use((socket,next)=>{
+   next()
+  })
+  headerNmsp.use(extractUser);
+  // now for the header namespace logic
+  headerNmsp.on("connection",async(socket)=>{
+        // this will help us to see if the user is online or offline
+    // if the user is offline then its socket array will be empty otherwise
+    // it will contain something
+    const users=await getSocketUsers({})
+    headerNmsp.emit("new_socket_connection",users)
+    await socketConnectedToUser(socket?.request?.user?.id,socket.id)
+    console.log("connected to the socket header namespace")
+    // disconnecting from the user
+    socket.on('disconnect', async() => {
+      console.log(socket.id,"it is disconnected")
+      await socketDisconnectedFromUser(socket?.request?.user?.id,socket.id)
+      console.log('User disconnected:', socket.id);
+    });
+  })
+  
+  // to use the express middleware for the session
+  io.engine.use(sessionMiddleware);
   // assigning a middlware for the incomming connection
   //this is to authenticate the connection
   //
-  io.use((socket, next) => {
-    socket.request.user=JSON.parse(socket.handshake.headers.userid)
-    next()
-    });
+
+  io.use(extractUser);
 
   io.on('connection', async (socket) => {
-    // this will help us to see if the user is online or offline
-    // if the user is offline then its socket array will be empty otherwise
-    // it will contain something
-    await socketConnectedToUser(socket?.request?.user?.id,socket.id)
 
-    console.log('A user connected:', socket.request.user);
   
   
     // Listen for incoming chat messages
@@ -115,8 +136,6 @@ const sessionMiddleware = session({
   
     // Handle user disconnects
     socket.on('disconnect', async() => {
-      console.log(socket.id,"it is disconnected")
-      await socketDisconnectedFromUser(socket?.request?.user?.id,socket.id)
       console.log('User disconnected:', socket.id);
     });
   });

@@ -1,16 +1,36 @@
 import { Link } from 'react-router-dom';
 import React ,{useEffect}from 'react';
 import { useDispatch,useSelector } from "react-redux";
-import { addUserAction, loginUserAction } from "../slices/userSlice";
+import { addUserAction, loginUserAction ,usersConnectionModify} from "../slices/userSlice";
+import io from "socket.io-client";
 import Avatar from '@mui/material/Avatar';
 const Header = () => {
 const dispatch=useDispatch()
 const user=useSelector(state=>state.user.user)
-useEffect(()=>{
-  // this is to ensure that the users profile gets updated each time the app restarts
-  if(localStorage.getItem("user"))
-  dispatch(loginUserAction({...JSON.parse(localStorage.getItem("user"))}))
-},[])
+let socketHeader
+
+useEffect(() => {
+  // Establish the socket connection
+    socketHeader = io("http://127.0.0.1:1234/%HEADERS%", {
+    extraHeaders: {
+      "userId": JSON.stringify(user),
+    },
+    path: "/chat",
+  });
+
+  // Listen for the 'new_socket_connected' event
+  socketHeader.on('new_socket_connected', (message) => {
+    // Dispatch the action with the received message
+    dispatch(usersConnectionModify(message));
+  });
+
+  // Cleanup the socket connection on component unmount
+  return () => {
+    socketHeader.off('new_socket_connected');
+    socketHeader.disconnect();
+  };
+}, []);
+
   return (
     <nav className="h-1/6 bg-orange-500 shadow-lg box-content py-4 overflow-hidden">
       <ul className="flex justify-around items-center h-full text-white font-semibold">
