@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { usersConnectionModify } from "../slices/userSlice";
 import io from "socket.io-client";
 import Avatar from '@mui/material/Avatar';
-import { MdInfo, MdChat, MdLogin } from 'react-icons/md';
 import Tooltip from '@mui/material/Tooltip';
+import { MdInfo, MdChat, MdPersonSearch, MdLogin, MdDashboard } from 'react-icons/md';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -21,7 +21,6 @@ const Header = () => {
     });
 
     socketHeader.on('new_socket_connection', (message) => {
-      console.log(message)
       dispatch(usersConnectionModify(message));
     });
 
@@ -33,44 +32,57 @@ const Header = () => {
 
   return (
     <nav
-      className="bg-orange-500 h-full flex flex-col justify-between text-white font-semibold p-4"
+      className="h-full flex flex-col justify-between bg-gradient-to-r from-purple-500 to-orange-500 py-6 text-white font-semibold shadow-xl"
     >
-      <ul className="space-y-4">
-        <li className="hover:bg-orange-600 p-2 rounded transition duration-300 ease-in-out cursor-pointer flex items-center space-x-2">
+      <ul className="space-y-6">
+        {/* About */}
+        <li className="hover:bg-white hover:text-orange-600 p-3 rounded-xl transition transform hover:scale-105 duration-300 ease-in-out flex items-center space-x-3">
           <Tooltip title="About">
             <Link to="about">
-              <MdInfo size={30} />
+              <MdInfo size={35} />
             </Link>
           </Tooltip>
         </li>
-        <li className="hover:bg-orange-600 p-2 rounded transition duration-300 ease-in-out cursor-pointer flex items-center space-x-2">
+        
+        {/* Chat */}
+        <li className="hover:bg-white hover:text-orange-600 p-3 rounded-xl transition transform hover:scale-105 duration-300 ease-in-out flex items-center space-x-3">
           <Tooltip title="Chat">
             <Link to="chat">
-              <MdChat size={30} />
+              <MdChat size={35} />
             </Link>
           </Tooltip>
         </li>
-        <li className="hover:bg-orange-600 p-2 rounded transition duration-300 ease-in-out cursor-pointer flex items-center space-x-2">
+
+        {/* Search People */}
+        <li className="hover:bg-white hover:text-orange-600 p-3 rounded-xl transition transform hover:scale-105 duration-300 ease-in-out flex items-center space-x-3">
+          <Tooltip title="Search People">
+            <Link to="searchPeople">
+              <MdPersonSearch size={35} />
+            </Link>
+          </Tooltip>
+        </li>
+
+        {/* Sign In */}
+        <li className="hover:bg-white hover:text-orange-600 p-3 rounded-xl transition transform hover:scale-105 duration-300 ease-in-out flex items-center space-x-3">
           <Tooltip title="Sign In">
             <Link to="form">
-              <MdLogin size={30} />
-            </Link>
-          </Tooltip>
-        </li>
-        <li className="hover:bg-orange-600 p-2 rounded transition duration-300 ease-in-out cursor-pointer flex items-center space-x-2">
-          <Tooltip title="search people">
-            <Link to="searchPeople">
-              <MdLogin size={30} />
+              <MdLogin size={35} />
             </Link>
           </Tooltip>
         </li>
       </ul>
-      <div className="flex items-center space-x-2">
+
+      <div className="flex items-center space-x-4">
+        {/* Dashboard */}
         <Link to="dashboard">
-        <Tooltip title="Dashboard">
-          <Avatar alt={user.username} src={user.profileUrl} />
-        </Tooltip>
-          {/* Additional dashboard link */}
+          <Tooltip title="Dashboard">
+            <Avatar alt={user.username} src={user.profileUrl} />
+          </Tooltip>
+        </Link>
+        <Link to="dashboard">
+          <Tooltip title="Dashboard">
+
+          </Tooltip>
         </Link>
       </div>
     </nav>
