@@ -44,11 +44,10 @@ headerNmsp.use(extractUser);
 
 // Namespace connection logic
 headerNmsp.on("connection", async (socket) => {
+
+    await socketConnectedToUser(socket?.request?.user?.id, socket.id);
     const users = await getSocketUsers({});
     headerNmsp.emit("new_socket_connection", users);
-    
-    console.log(socket.request.user);
-    await socketConnectedToUser(socket?.request?.user?.id, socket.id);
     console.log("connected to the socket header namespace");
 
     socket.on('disconnect', async () => {

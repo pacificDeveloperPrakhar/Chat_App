@@ -57,12 +57,19 @@ const Header = () => {
             </Link>
           </Tooltip>
         </li>
+        <li className="hover:bg-orange-600 p-2 rounded transition duration-300 ease-in-out cursor-pointer flex items-center space-x-2">
+          <Tooltip title="search people">
+            <Link to="searchPeople">
+              <MdLogin size={30} />
+            </Link>
+          </Tooltip>
+        </li>
       </ul>
       <div className="flex items-center space-x-2">
+        <Link to="dashboard">
         <Tooltip title="Dashboard">
           <Avatar alt={user.username} src={user.profileUrl} />
         </Tooltip>
-        <Link to="dashboard">
           {/* Additional dashboard link */}
         </Link>
       </div>
