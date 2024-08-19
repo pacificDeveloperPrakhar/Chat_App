@@ -2,8 +2,9 @@ const server = require("./app.js");
 const Socket = require('socket.io');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays, getSocketUsers } = require("./utils/socketUtils.js");
+const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays, getSocketUsers,getTheConversations } = require("./utils/socketUtils.js");
 const { extractUser } = require("./controllers/socketController.js");
+const { message } = require("./db/schema/schema.js");
 
 // Start Socket.IO server
 const io = Socket(server, {
@@ -62,11 +63,19 @@ headerNmsp.on("connection", async (socket) => {
 io.engine.use(sessionMiddleware);
 
 // Global middleware for all namespaces
-io.use(extractUser);
+io.use(extractUser); 
 
-io.on('connection', async (socket) => {
+io.on('connection', async(socket) => {
     console.log("connected");
-
+    // this is for the creations of room
+    socket.on("create_conversations",async(payload)=>{
+        console.log("something happend")
+     const {me,users}=payload
+     console.log(payload)
+     const conversation=await getTheConversations(me,users)
+     
+     
+    })
     socket.on('chatMessage', (msg) => {
         if (socket.user) {
             io.emit('chatMessage', { user: socket.user.username, message: msg });

@@ -1,6 +1,5 @@
-// Importing the necessary modules using CommonJS
 const { integer, pgEnum, pgTable, uniqueIndex, varchar, boolean, timestamp, jsonb, uuid } = require('drizzle-orm/pg-core');
-const { v4: uuidv4 } = require('uuid');  // Properly import uuidv4 function
+const { v4: uuidv4 } = require('uuid');
 const { and } = require('drizzle-orm');
 
 // Declaring an enum for user status
@@ -8,25 +7,18 @@ const userStatusEnum = pgEnum('user_status', ['active', 'inactive', 'banned']);
 
 // Creating the users table
 const users = pgTable('users', {
-  id: uuid('id').defaultRandom().primaryKey(),  // Use UUID for ID
+  id: uuid('id').defaultRandom().primaryKey(),
   email: varchar('email', { length: 256 }).unique(),
   username: varchar('username', { length: 256 }).unique(),
   is_verified: boolean('is_verified').default(false),
   profileUrl: varchar('profile_url', { length: 512 }).default(null),
-  userStatus: userStatusEnum('user_status').default('inactive'),  // Default value set to 'inactive'
-  createdAt: timestamp('created_at').defaultNow(),  // Changed to defaultNow()
-  // changed the timestamp syntax caution do not use the javascript database.now as it will raise the error
-  updatedAt: timestamp('updated_at')
-    .notNull()
-    .$onUpdate(() => new Date()),  
+  userStatus: userStatusEnum('user_status').default('inactive'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().$onUpdate(() => new Date()),
   socketConnected: jsonb('socket_connected').notNull().default('[]'),
-  // Use JSONB for socket connections
-  password:varchar("password").notNull()  ,
-  
-  // For the password reset token and verification
+  password: varchar("password").notNull(),
   passwordResetToken: varchar('password_reset_token', { length: 255 }).default(null),
-  passwordResetExpires: timestamp('password_reset_expires').default(null), // Expiration time for reset token
-  
+  passwordResetExpires: timestamp('password_reset_expires').default(null),
 }, (users) => {
   return {
     emailIndex: uniqueIndex('email_idx').on(users.email),
@@ -36,31 +28,42 @@ const users = pgTable('users', {
 
 // Creating the verification_factors table
 const verification_factors = pgTable('verification_factors', {
-  id: uuid('id').defaultRandom().primaryKey(),  // Use UUID for ID
-  profileId: uuid('profile_id').references(() => users.id,{onDelete:"cascade",onUpdate:"cascade"}),  
+  id: uuid('id').defaultRandom().primaryKey(),
+  profileId: uuid('profile_id').references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   value: varchar('value', { length: 512 }).default(null),
-  createdAt: timestamp('created_at').defaultNow(),  
-  expiresAt: timestamp('expires_at').defaultNow(),  
+  createdAt: timestamp('created_at').defaultNow(),
+  expiresAt: timestamp('expires_at').defaultNow(),
   isValid: boolean('is_valid').default(true),
-  isUsed: boolean('is_used').default(false)
+  isUsed: boolean('is_used').default(false),
 }, (verification_factors) => {
   return {};
 });
-// a dummy database
-const fruits = pgTable('fruits', {
-  id: uuid('id').defaultRandom().primaryKey(),         // Auto-incrementing primary key
-  name: varchar('name', { length: 255 })  // Fruit name, with a max length of 255 characters
-    .notNull(),
-  color: varchar('color', { length: 100 }) // Color of the fruit, with a max length of 100 characters
-    .notNull(),
-  quantity: integer('quantity')           // Quantity of the fruit
-    .notNull()
-}, (fruits) => {
-  return {}});
-// Exporting the modules using CommonJS
+
+// Creating the conversations table
+const conversations = pgTable("conversations", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  roomName: varchar('room_name', { length: 255 }).notNull(),
+  participants: jsonb('participants').notNull().default('[]'),
+}, (conversations) => {
+  return {};
+});
+
+// Creating the message table
+const message = pgTable("message", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  senderId: uuid('senderId').references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  text: varchar('text', { length: 255 }),
+  file: varchar("file", { length: 255 }),
+  conversationsId: uuid('conversationsId').references(() => conversations.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  targettedUser: jsonb("targettedUser").default('[]').notNull(),//targettedUser will have [{userId,readAt}]
+  sendAt:timestamp('send_at').defaultNow(),
+});
+
+
 module.exports = {
-  fruits,
   userStatusEnum,
   users,
-  verification_factors
+  verification_factors,
+  conversations,
+  message,  
 };

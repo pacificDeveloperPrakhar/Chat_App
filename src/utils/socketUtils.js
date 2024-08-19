@@ -1,7 +1,7 @@
 const { user } = require("pg/lib/defaults");
 const { db } = require("../db/db_connection");
-const { users } = require("../db/schema/schema")
-const { eq } = require("drizzle-orm");
+const { users,conversations } = require("../db/schema/schema")
+const { eq ,and} = require("drizzle-orm");
  
 exports.socketConnectedToUser=async function(id,socketId){
     const {socket_connected}=(await db.select({socket_connected:users.socketConnected}).from(users).where(eq(users.id,id)))[0]
@@ -55,4 +55,37 @@ exports.getSocketUsers=async function ({userStatus}) {
     usersArr=await db.select().from(users).where(eq(users.is_verified,true))
     return await usersArr
     
+}
+//create a room if it exists then return the existing one
+exports.getTheConversations=async function findMatchingConversation(me,users) {
+// Combine and flatten the arrays
+
+const participantsArray = [me.id, ...users.map(user => user.id)];
+const usernameArray = [me.username, ...users.map(user => user.username)];
+
+// Remove duplicates using Set
+const uniqueParticipants = [...new Set(participantsArray)];
+const uniqueUsernames = [...new Set(usernameArray)];
+  // Convert the participantsArray to a sorted version to ensure consistent comparison
+  const sortedParticipants = participantsArray.sort();
+
+  // Query the conversations table using Drizzle ORM and PostgreSQL JSONB comparison
+  const matchingConversations = await db.select().from(conversations)
+    .where(
+        eq(
+          conversations.participants, uniqueParticipants  // Compare sorted participants
+        
+      )
+    );
+
+  // Return the conversation if found
+  if(matchingConversations.length)
+  {
+    return await matchingConversations;
+  }
+  console.log("new conversations has been created")
+  return await db.insert(conversations).values({
+    participants:uniqueParticipants,
+    roomName:JSON.stringify(uniqueUsernames)
+  })
 }

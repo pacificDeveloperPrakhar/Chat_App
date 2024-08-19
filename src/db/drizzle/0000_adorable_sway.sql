@@ -4,13 +4,6 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "fruits" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" varchar(255) NOT NULL,
-	"color" varchar(100) NOT NULL,
-	"quantity" integer NOT NULL
-);
---> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"email" varchar(256),
@@ -38,8 +31,36 @@ CREATE TABLE IF NOT EXISTS "verification_factors" (
 	"is_used" boolean DEFAULT false
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "conversations" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"room_name" varchar(255) NOT NULL,
+	"participants" jsonb DEFAULT '[]' NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "message" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"senderId" uuid,
+	"text" varchar(255),
+	"file" varchar(255),
+	"conversationsId" uuid,
+	"targettedUser" jsonb DEFAULT '[]' NOT NULL,
+	"send_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "verification_factors" ADD CONSTRAINT "verification_factors_profile_id_users_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE cascade;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "message" ADD CONSTRAINT "message_senderId_users_id_fk" FOREIGN KEY ("senderId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE cascade;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "message" ADD CONSTRAINT "message_conversationsId_conversations_id_fk" FOREIGN KEY ("conversationsId") REFERENCES "public"."conversations"("id") ON DELETE cascade ON UPDATE cascade;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
