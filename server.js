@@ -7,7 +7,7 @@ const db_postgres=require("./src/db/db_connection.js")
 require("./src/db/migrate/migrate")
 const host = process.env.host; 
 const port = process.env.port; 
-
+const io=require("./src/socket.js")
 // If there is an unhandled promise rejection, log the error and shut down the server gracefully
 process.on("unhandledRejection", (err) => {
   console.log(err);

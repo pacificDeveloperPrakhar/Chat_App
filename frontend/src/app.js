@@ -7,6 +7,8 @@ import Form from './component/Form'
 import Dashboard from './component/Dashboard';
 import About from './component/About';
 import Chat from "./component/Chat";
+import ChatLayout from "./component/ChatLayout"
+import ContactSection from "./component/ContactSection"
 const routers = createBrowserRouter([
   {
     path: "/",

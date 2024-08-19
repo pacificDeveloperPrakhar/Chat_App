@@ -43,7 +43,7 @@ exports.socketDisconnectedFromUser = async function(id, socketId) {
   };
   //now making the socket connected array empty for all the users
   exports.clearSocketArrays=async function () {
-    await db.update(users).set({socketConnected:[]})
+    await db.update(users).set({socketConnected:[],userStatus:"inactive"})
   }
 
 //   now a socket function to get all the users and return them

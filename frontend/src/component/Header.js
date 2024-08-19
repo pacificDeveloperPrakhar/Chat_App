@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { usersConnectionModify } from "../slices/userSlice";
 import io from "socket.io-client";
 import Avatar from '@mui/material/Avatar';
-import { MdInfo, MdChat, MdLogin, MdAccountCircle } from 'react-icons/md';
+import { MdInfo, MdChat, MdLogin } from 'react-icons/md';
 import Tooltip from '@mui/material/Tooltip';
 
 const Header = () => {
@@ -21,6 +21,7 @@ const Header = () => {
     });
 
     socketHeader.on('new_socket_connection', (message) => {
+      console.log(message)
       dispatch(usersConnectionModify(message));
     });
 
@@ -32,44 +33,38 @@ const Header = () => {
 
   return (
     <nav
-      className="bg-orange-500 shadow-lg h-full fixed left-0 top-0 flex flex-col justify-between text-white font-semibold"
-      style={{ 
-        boxSizing: 'border-box',
-        boxShadow: '4px 0 8px rgba(0, 0, 0, 0.3)' // Shadow on the right side
-      }}
+      className="bg-orange-500 h-full flex flex-col justify-between text-white font-semibold p-4"
     >
-      <div className="h-16 flex items-center justify-center bg-orange-600 w-full shadow-md">
-        {/* No title or name here */}
-      </div>
-      <ul className="flex flex-col justify-start items-start h-full w-full px-2 space-y-4 pt-4">
-        <li className="hover:bg-orange-600 px-4 py-2 rounded transition duration-300 ease-in-out cursor-pointer w-full flex items-center space-x-2">
+      <ul className="space-y-4">
+        <li className="hover:bg-orange-600 p-2 rounded transition duration-300 ease-in-out cursor-pointer flex items-center space-x-2">
           <Tooltip title="About">
             <Link to="about">
-              <MdInfo size={30} /> {/* Material icon */}
+              <MdInfo size={30} />
             </Link>
           </Tooltip>
         </li>
-        <li className="hover:bg-orange-600 px-4 py-2 rounded transition duration-300 ease-in-out cursor-pointer w-full flex items-center space-x-2">
+        <li className="hover:bg-orange-600 p-2 rounded transition duration-300 ease-in-out cursor-pointer flex items-center space-x-2">
           <Tooltip title="Chat">
             <Link to="chat">
-              <MdChat size={30} /> {/* Material icon */}
+              <MdChat size={30} />
             </Link>
           </Tooltip>
         </li>
-        <li className="hover:bg-orange-600 px-4 py-2 rounded transition duration-300 ease-in-out cursor-pointer w-full flex items-center space-x-2">
+        <li className="hover:bg-orange-600 p-2 rounded transition duration-300 ease-in-out cursor-pointer flex items-center space-x-2">
           <Tooltip title="Sign In">
             <Link to="form">
-              <MdLogin size={30} /> {/* Material icon */}
+              <MdLogin size={30} />
             </Link>
           </Tooltip>
         </li>
       </ul>
-      <div className="mb-4 px-2 flex items-center space-x-2">
+      <div className="flex items-center space-x-2">
         <Tooltip title="Dashboard">
-        <Avatar alt={user.username} src={user.profileUrl} />
-          <Link to="dashboard">
-          </Link>
+          <Avatar alt={user.username} src={user.profileUrl} />
         </Tooltip>
+        <Link to="dashboard">
+          {/* Additional dashboard link */}
+        </Link>
       </div>
     </nav>
   );
