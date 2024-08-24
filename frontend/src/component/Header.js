@@ -67,7 +67,7 @@ const Header = () => {
 
   return (
     <nav className="h-full flex flex-col justify-between bg-gradient-to-r from-purple-500 to-orange-500 py-2 text-white font-semibold shadow-xl">
-      <ul className="space-y-6">
+      <ul className="space-y-6 box-content">
         {/* About */}
         <li className="hover:bg-white hover:text-orange-600 p-3 transition transform hover:scale-105 duration-300 ease-in-out flex items-center space-x-3">
           <Tooltip title="About">
@@ -81,7 +81,10 @@ const Header = () => {
         <li className="hover:bg-white hover:text-orange-600 p-3 transition transform hover:scale-105 duration-300 ease-in-out flex items-center space-x-3">
           <Tooltip title="Chat">
             <Link to="chat">
+            <IconButton >
+          
               <Chat size={35} />
+            </IconButton>
             </Link>
           </Tooltip>
         </li>
@@ -109,7 +112,9 @@ const Header = () => {
         {/* Dashboard */}
         <Link to="dashboard">
           <Tooltip title="Dashboard">
-            <Avatar alt={user.username} src={user.profileUrl} />
+          <IconButton >
+            <Avatar alt={user.username} src={user.profileUrl} sx={{}} />
+          </IconButton>
           </Tooltip>
         </Link>
       </div>

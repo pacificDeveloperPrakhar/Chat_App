@@ -1,10 +1,10 @@
-const { integer, pgEnum, pgTable, uniqueIndex, varchar, boolean, timestamp, jsonb, uuid } = require('drizzle-orm/pg-core');
+const { integer, pgEnum, pgTable, uniqueIndex, varchar, boolean, timestamp, jsonb, uuid ,index} = require('drizzle-orm/pg-core');
 const { v4: uuidv4 } = require('uuid');
 const { and } = require('drizzle-orm');
 
 // Declaring an enum for user status
 const userStatusEnum = pgEnum('user_status', ['active', 'inactive', 'banned']);
-
+const messageTypeEnum=pgEnum("message_type",["tagged","reply","message"]);
 // Creating the users table
 const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -49,14 +49,28 @@ const conversations = pgTable("conversations", {
 });
 
 // Creating the message table
+// indexes are stored in a data structure which involves the usage of b tree which helps in the better and efficent sortng retirieving of data
 const message = pgTable("message", {
   id: uuid("id").defaultRandom().primaryKey(),
   senderId: uuid('senderId').references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   text: varchar('text', { length: 255 }),
   file: varchar("file", { length: 255 }),
   conversationsId: uuid('conversationsId').references(() => conversations.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  targettedUser: jsonb("targettedUser").default('[]').notNull(),//targettedUser will have [{userId,readAt}]
-  sendAt:timestamp('send_at').defaultNow(),
+  targettedUser: jsonb("targettedUser").default('[]').notNull(), // targettedUser will have [{userId, readAt}]
+  sendAt: timestamp('send_at').defaultNow(),
+  readBy: jsonb("readBy").default('[]').notNull(),
+  type: messageTypeEnum("type").default("message"),
+}, (message) => {
+  return {
+    // Index on conversationsId for faster retrieval of messages by conversation
+    conversationIndex: index('conversation_idx').on(message.conversationsId),
+
+    // Composite index on conversationsId and sendAt for fast queries sorted by send time
+    conversationSendAtIndex: index('conversation_send_at_idx').on(message.conversationsId, message.sendAt),
+
+    // Index on sendAt for queries that retrieve or order by message send time
+    sendAtIndex: index('send_at_idx').on(message.sendAt),
+  };
 });
 
 
@@ -66,4 +80,5 @@ module.exports = {
   verification_factors,
   conversations,
   message,  
+  messageTypeEnum
 };

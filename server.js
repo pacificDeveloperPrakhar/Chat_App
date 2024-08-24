@@ -4,7 +4,7 @@ dotenv.config({ path: "./config.env" }); // Load environment variables from conf
 const server=require("./src/app.js")
 // importing the connection file to connect with the postgres databse
 const db_postgres=require("./src/db/db_connection.js")
-require("./src/db/migrate/migrate")
+
 const host = process.env.host; 
 const port = process.env.port; 
 const io=require("./src/socket.js")

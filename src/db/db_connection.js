@@ -2,7 +2,6 @@ const { pgTable, serial, text, varchar } = require('drizzle-orm/pg-core');
 const { drizzle } = require('drizzle-orm/node-postgres');
 const pg = require('pg');       
 const dotenv = require("dotenv");
-dotenv.config({ path: "../../config.env" });
 require("./schema/schema.js")
 // Create a new PostgreSQL client
 const client = new pg.Client({

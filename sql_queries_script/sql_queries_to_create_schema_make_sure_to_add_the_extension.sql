@@ -1,5 +1,12 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 DO $$ BEGIN
  CREATE TYPE "public"."user_status" AS ENUM('active', 'inactive', 'banned');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."message_type" AS ENUM('tagged', 'reply', 'message');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -44,7 +51,9 @@ CREATE TABLE IF NOT EXISTS "message" (
 	"file" varchar(255),
 	"conversationsId" uuid,
 	"targettedUser" jsonb DEFAULT '[]' NOT NULL,
-	"send_at" timestamp DEFAULT now()
+	"send_at" timestamp DEFAULT now(),
+	"readBy" jsonb DEFAULT '[]' NOT NULL,
+	"type" "message_type" DEFAULT 'message'
 );
 --> statement-breakpoint
 DO $$ BEGIN
@@ -66,4 +75,7 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "email_idx" ON "users" USING btree ("email");--> statement-breakpoint
-CREATE UNIQUE INDEX IF NOT EXISTS "username_idx" ON "users" USING btree ("username");
+CREATE UNIQUE INDEX IF NOT EXISTS "username_idx" ON "users" USING btree ("username");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "conversation_idx" ON "message" USING btree ("conversationsId");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "conversation_send_at_idx" ON "message" USING btree ("conversationsId","send_at");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "send_at_idx" ON "message" USING btree ("send_at");
