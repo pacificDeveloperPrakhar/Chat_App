@@ -21,22 +21,25 @@ const Header = () => {
   const socketConversation=useRef(null);
 
   useEffect(() => {
-    socketHeader = io("http://127.0.0.1:1234/%HEADERS%", {
+    if(!user)
+      return
+    socketHeader = io("http://127.0.0.1:3124/%HEADERS%", {
       extraHeaders: {
         "userId": JSON.stringify(user),
       },
       path: "/chat",
     });
     // another socket for the conversation creation and the conversation about receiver
-    socketConversation.current = io("http://127.0.0.1:1234", {
+    socketConversation.current = io("http://127.0.0.1:3124", {
       extraHeaders: {
         "userId": JSON.stringify(user),
       },
       path: "/chat",
     });
-
-    socketHeader.on('new_socket_connection', (message) => {
-      dispatch(usersConnectionModify(message));
+// this is where i am trying to dispatching the actions to store all the users available received and conversations that happend or involved the user
+    socketHeader.on('new_socket_connection', ({users,conversations}) => {
+     
+      dispatch(usersConnectionModify(users));
     });
 
     return () => {

@@ -44,6 +44,9 @@ const conversations = pgTable("conversations", {
   id: uuid("id").defaultRandom().primaryKey(),
   roomName: varchar('room_name', { length: 255 }).notNull(),
   participants: jsonb('participants').notNull().default('[]'),
+  participantsId:jsonb("participantsId").notNull().default("[]"),
+  profileUrl:varchar("profileUrl").default(null),
+  
 }, (conversations) => {
   return {};
 });
@@ -60,6 +63,7 @@ const message = pgTable("message", {
   sendAt: timestamp('send_at').defaultNow(),
   readBy: jsonb("readBy").default('[]').notNull(),
   type: messageTypeEnum("type").default("message"),
+  profilePic:varchar('text', { length: 255 }),
 }, (message) => {
   return {
     // Index on conversationsId for faster retrieval of messages by conversation

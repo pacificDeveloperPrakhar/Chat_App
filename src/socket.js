@@ -2,7 +2,7 @@ const server = require("./app.js");
 const Socket = require('socket.io');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays, getSocketUsers,getTheConversations } = require("./utils/socketUtils.js");
+const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays, getSocketUsers,getTheConversations,getAllConversations } = require("./utils/socketUtils.js");
 const { extractUser } = require("./controllers/socketController.js");
 const { message } = require("./db/schema/schema.js");
 
@@ -10,7 +10,8 @@ const { message } = require("./db/schema/schema.js");
 const io = Socket(server, {
     cors: {
         origin: "*", // Allow all origins for development
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
+        optionsSuccessStatus: 200
     },
     path: "/chat"
 });
@@ -45,10 +46,10 @@ headerNmsp.use(extractUser);
 
 // Namespace connection logic
 headerNmsp.on("connection", async (socket) => {
-
     await socketConnectedToUser(socket?.request?.user?.id, socket.id);
     const users = await getSocketUsers({});
-    headerNmsp.emit("new_socket_connection", users);
+    const conversations=getAllConversations(socket?.request?.user.id);
+    headerNmsp.emit("new_socket_connection", {users,conversations});
     console.log("connected to the socket header namespace");
 
     socket.on('disconnect', async () => {
@@ -71,9 +72,8 @@ io.on('connection', async(socket) => {
     socket.on("create_conversations",async(payload)=>{
         console.log("something happend")
      const {me,users}=payload
-     console.log(payload)
      const conversation=await getTheConversations(me,users)
-     
+     socket.emit("create_conversations",conversation)
      
     })
     socket.on('chatMessage', (msg) => {

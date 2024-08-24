@@ -136,7 +136,7 @@ exports.tokenGenerator=catchAsync(async function(req,res,next){
     console.log(verification_obj)
     if(!verification_obj)
       return next(new appError("verification time has either been expired or new verification token was issued",400))
-    const profile=(await db.select().from(users).where(eq(users.id,verification_obj.profileId)))[0]
+    let profile=(await db.select().from(users).where(eq(users.id,verification_obj.profileId)))[0]
     if(!profile)
       return next(new appError("profile associated with this verification has been deleted from the database"))
     //check if the token has not been tampered it is somewhat not useful yet i did it anyways as the token was comming from the database
@@ -146,14 +146,12 @@ exports.tokenGenerator=catchAsync(async function(req,res,next){
     if(! await compareResetToken({email,providedToken:token}))
       return next(new appError("token is invalid",403))
 
-    await db
+    profile=await db
     .update(users)
     .set({
       is_verified:true
     })
-    .returning({
-      id: users.id
-    }).where(eq(profile.id,users.id));
+    .returning().where(eq(profile.id,users.id));
     
     // ------------------------------------------------------------------------------------------
     // making the request ready for the following middleware this is in case of the verification of the email

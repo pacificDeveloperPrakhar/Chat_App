@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { disconnect } from "process";
 const userState = {
   users: [],
   user: localStorage.getItem('user')
@@ -26,7 +25,7 @@ export const addUserAction = createAsyncThunk(
            },
          };
       const { data } = await axios.post(
-        "http://127.0.0.1:1234/profiles/signup",
+        "http://127.0.0.1:3124/profiles/signup",
         payload,config
       );
       return data;
@@ -52,7 +51,7 @@ export const loginUserAction = createAsyncThunk(
            },
          };
       const { data } = await axios.post(
-        "http://127.0.0.1:1234/profiles/login",
+        "http://127.0.0.1:3124/profiles/login",
         payload,config
       );
       console.log(data)

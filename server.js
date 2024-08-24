@@ -11,17 +11,12 @@ const io=require("./src/socket.js")
 // If there is an unhandled promise rejection, log the error and shut down the server gracefully
 process.on("unhandledRejection", (err) => {
   console.log(err);
-  server.close(() => {
-    process.exit();
-  });
+
 });
 
 // If there is an uncaught exception, log the error and shut down the server gracefully
 process.on("uncaughtException", (err) => {
   console.log(err);
-  server.close(() => {
-    process.exit();
-  });
 });
 
 // Get MongoDB connection URL

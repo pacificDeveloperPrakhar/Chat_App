@@ -12,6 +12,7 @@ const bcrypt=require("bcrypt")
 // then this function will return if the data is valid and the message which will be helpful in validating the data being inputted
 exports.signup=catchAsync(async(req,res,next)=>{
     let {email,username,password}=req.body
+    console.log(req.body)
     password=await bcrypt.hash(password,10);
     //checking the credentials
     const {isValid,message}=validateProfile(req.body)

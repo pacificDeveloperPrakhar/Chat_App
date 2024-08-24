@@ -18,7 +18,13 @@ const { extractUser } = require("./controllers/socketController.js");
 
 // Enable CORS for all origins and HTTP methods
 
-app.use(cors());
+app.use(cors({
+    origin: '*',  // Allow all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  
+    allowedHeaders: ['Content-Type', 'Authorization'],  
+    credentials: true ,
+    optionsSuccessStatus:200
+  }));
 
 // Session configuration with MongoDB for session storage
 app.use(session({
