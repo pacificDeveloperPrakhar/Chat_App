@@ -3,6 +3,7 @@ const {signup,getAllProfiles,getProfileById,login,attachProfile}=require("../con
 const {authenticateRequest, tokenGenerator}=require("../controllers/authenticationController")
 const {issueToken,authenticateVerification}=require("../controllers/authenticationController")
 const { sendMail } = require("../controllers/communicationController")
+const conversationRoute=require("./conversationRoute")
 const router=express.Router()
 router.route("/login").post(login,issueToken)
 router.route("/authenticate").get(authenticateRequest,(req,res,next)=>{
@@ -14,5 +15,6 @@ router.route("/authenticate").get(authenticateRequest,(req,res,next)=>{
 router.route("/signup").post(signup,tokenGenerator,attachProfile,sendMail)
 router.route("/signup/:verifyId").get(authenticateVerification,issueToken)
 router.route("/").post(signup).get(getAllProfiles,tokenGenerator)
+router.use("/:userId/conversations",conversationRoute)
 router.route("/:userId").get(getProfileById)
 module.exports=router

@@ -2,17 +2,11 @@ const express = require("express");
 const profileRoutes = require("./routes/profileRoutes.js");
 const session = require('express-session');
 const cors = require('cors');
-const { users, verification_factors, fruits } = require("./db/schema/schema.js");
-const { db } = require("./db/db_connection");
 const MongoStore = require('connect-mongo');
 const app = express();
 const http = require("http");
 const server = http.createServer(app); 
-const Socket = require('socket.io');
-const { user } = require("pg/lib/defaults.js");
-const { eq } = require("drizzle-orm");
-const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays ,getSocketUsers} = require("./utils/socketUtils.js");
-const { extractUser } = require("./controllers/socketController.js");
+const conversationRoute=require("./routes/conversationRoute.js")
 
 // Initialize Express app
 
@@ -47,5 +41,6 @@ app.use(express.json());
 
 // Route handling for profile-related actions
 app.use("/profiles", profileRoutes);
+app.use("/conversation", conversationRoute);
 // Export the app module
 module.exports = server;
