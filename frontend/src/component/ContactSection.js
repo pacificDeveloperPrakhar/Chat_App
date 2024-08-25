@@ -27,8 +27,6 @@ const ContactList = ({ onParticipantSelect }) => {
     } else {
       setSelectedParticipants([...selectedParticipants, participant]);
     }
-
-    onParticipantSelect([...selectedParticipants, participant]);
   };
 
   const getOnlineStatus = (user) => {

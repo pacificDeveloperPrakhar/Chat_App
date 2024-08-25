@@ -1,8 +1,9 @@
-const { user } = require("pg/lib/defaults");
+
 const { db } = require("../db/db_connection");
 const { users,conversations } = require("../db/schema/schema")
-const { eq ,and,arrayContains} = require("drizzle-orm");
+const { eq ,and,arrayContains,inArray} = require("drizzle-orm");
 const appError = require("./appErrors");
+
  
 exports.socketConnectedToUser=async function(id,socketId){
     const user=(await db.select({socket_connected:users.socketConnected}).from(users).where(eq(users.id,id)))[0]
@@ -64,15 +65,19 @@ exports.getSocketUsers=async function ({userStatus}) {
 //create a room if it exists then return the existing one
 exports.getTheConversations=async function findMatchingConversation(me,users) {
 // Combine and flatten the arrays
-const usersArray=[me,...users]
 const participantsArray = [me.id, ...users.map(user => user.id)];
 const usernameArray = [me.username, ...users.map(user => user.username)];
 
 // Remove duplicates using Set
 const uniqueParticipants = [...new Set(participantsArray)];
 const uniqueUsernames = [...new Set(usernameArray)];
-  // Convert the participantsArray to a sorted version to ensure consistent comparison
-  const sortedParticipants = participantsArray.sort();
+// Convert the participantsArray to a sorted version to ensure consistent comparison
+const sortedParticipants = participantsArray.sort();
+const usersArray = [me, ...users].filter(
+  (user, index, self) =>
+    index === self.findIndex(u => u.socketId === user.socketId)
+);
+
 
   // Query the conversations table using Drizzle ORM and PostgreSQL JSONB comparison
   const matchingConversations = await db.select().from(conversations)
@@ -85,12 +90,10 @@ const uniqueUsernames = [...new Set(usernameArray)];
 
   // Return the conversation if found
   // if the conversation row already exits then return the existing row of the corresponding conversation
-  console.log(matchingConversations)
   if(matchingConversations.length)
   {
-    return await matchingConversations;
+    return matchingConversations;
   }
-  console.log("new conversations has been created")
    const conversation=(await db.insert(conversations).values({
     participants:usersArray,
     roomName:JSON.stringify(uniqueUsernames),
@@ -106,4 +109,19 @@ const uniqueUsernames = [...new Set(usernameArray)];
 exports.getAllConversations=async function (id) {
  const conversationsAll=await db.select().from(conversations).where(arrayContains(conversations.participantsId,id))
   return conversationsAll
+}
+// to create the room for initating the conversation and joining all the corresponding sockets of the users to that room`
+exports.createRoomForConversation=async function(conversation,io,socketCollection){
+  const allSocketsForRoom=(await db.select({socketConnected:users.socketConnected}).from(users).where(inArray(users.id,conversation?.[0].participantsId)))
+  console.log(allSocketsForRoom)
+ for(let i=0;i<allSocketsForRoom.length;i++){
+  allSocketsForRoom[i].socketConnected.forEach((socketId=>{
+    if(!socketCollection?.[socketId])
+      return
+    socketCollection?.[socketId]?.join(conversation?.[0].roomName);
+  }))
+ }
+//  after creating the conversation it will emit the new conversation has been created to notify all the sockets connected that
+// the new conversation has been created and they have been included
+ io.in(conversation?.[0].roomName).emit("create_conversations",conversation?.[0])
 }

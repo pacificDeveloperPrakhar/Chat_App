@@ -2,10 +2,11 @@ const server = require("./app.js");
 const Socket = require('socket.io');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays, getSocketUsers,getTheConversations,getAllConversations } = require("./utils/socketUtils.js");
+const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays, getSocketUsers,getTheConversations,getAllConversations,createRoomForConversation } = require("./utils/socketUtils.js");
 const { extractUser } = require("./controllers/socketController.js");
 const { message } = require("./db/schema/schema.js");
 
+const socketCollection={}
 // Start Socket.IO server
 const io = Socket(server, {
     cors: {
@@ -51,8 +52,9 @@ headerNmsp.on("connection", async (socket) => {
     const conversations=getAllConversations(socket?.request?.user.id);
     headerNmsp.emit("new_socket_connection", {users,conversations});
     console.log("connected to the socket header namespace");
-
+    
     socket.on('disconnect', async () => {
+        delete socketCollection[socket.id]
         await socketDisconnectedFromUser(socket?.request?.user?.id, socket.id);
         const updatedUsers = await getSocketUsers({});
         headerNmsp.emit("new_socket_connection", updatedUsers);
@@ -65,16 +67,17 @@ io.engine.use(sessionMiddleware);
 
 // Global middleware for all namespaces
 io.use(extractUser); 
-
 io.on('connection', async(socket) => {
-    console.log("connected");
+    // initiating conversation
+    socketCollection[socket.id]=socket
+    await socketConnectedToUser(socket?.request?.user?.id, socket.id);
     // this is for the creations of room
     socket.on("create_conversations",async(payload)=>{
-        console.log("something happend")
-     const {me,users}=payload
-     const conversation=await getTheConversations(me,users)
-     socket.emit("create_conversations",conversation)
-     
+        const {me,users}=payload
+        const conversation=await getTheConversations(me,users)
+        
+        await createRoomForConversation(conversation,io,socketCollection)
+        
     })
     socket.on('chatMessage', (msg) => {
         if (socket.user) {
@@ -83,7 +86,8 @@ io.on('connection', async(socket) => {
     });
 
     socket.on('disconnect', async () => {
-        console.log('User disconnected:', socket.id);
+        delete socketCollection[socket.id]
+        console.log('socket disconnected:', socket.id);
     });
 });
 

@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import { Info, Chat, PersonSearch, Login, Close } from '@mui/icons-material';  // Import Material Design Icons
 import ContactSection from "./ContactSection"
+import { conversations } from '../../../src/db/schema/schema';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -41,9 +42,17 @@ const Header = () => {
      
       dispatch(usersConnectionModify(users));
     });
+    socketHeader.on('create_conversations',(conversations)=>{
+      console.log(conversations)
+    })
+    socketConversation.current.on('create_conversations',(conversations)=>{
+      console.log(conversations)
+    })
 
     return () => {
       socketHeader.off('new_socket_connection');
+      socketHeader.off("create_conversations")
+      socketConversation.current.off("create_conversations")
       socketHeader.disconnect();
     };
   }, [dispatch, user]);
