@@ -7,11 +7,11 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app); 
 const conversationRoute=require("./routes/conversationRoute.js")
-
+const device=require("express-device")
 // Initialize Express app
 
 // Enable CORS for all origins and HTTP methods
-
+app.use(device.capture())
 app.use(cors({
     origin: '*',  // Allow all origins
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  

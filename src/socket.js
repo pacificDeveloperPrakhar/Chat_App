@@ -49,8 +49,7 @@ headerNmsp.use(extractUser);
 headerNmsp.on("connection", async (socket) => {
     await socketConnectedToUser(socket?.request?.user?.id, socket.id);
     const users = await getSocketUsers({});
-    const conversations=getAllConversations(socket?.request?.user.id);
-    headerNmsp.emit("new_socket_connection", {users,conversations});
+    headerNmsp.emit("new_socket_connection", {users});
     console.log("connected to the socket header namespace");
     
     socket.on('disconnect', async () => {
@@ -84,11 +83,14 @@ io.on('connection', async(socket) => {
             io.emit('chatMessage', { user: socket.user.username, message: msg });
         }
     });
-
+    
     socket.on('disconnect', async () => {
         delete socketCollection[socket.id]
         console.log('socket disconnected:', socket.id);
     });
+    const conversations=await getAllConversations(socket?.request?.user.id);
+    conversations.forEach(conversation=>socket.join(conversation?.roomName))
+    socket.emit("all_conversations_registered",conversations)
 });
 
 // Clear socket arrays on server start

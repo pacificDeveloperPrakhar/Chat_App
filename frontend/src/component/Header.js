@@ -10,7 +10,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import { Info, Chat, PersonSearch, Login, Close } from '@mui/icons-material';  // Import Material Design Icons
 import ContactSection from "./ContactSection"
-import { conversations } from '../../../src/db/schema/schema';
+import { addConversationsToStore } from '../slices/conversationSlice';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -38,7 +38,7 @@ const Header = () => {
       path: "/chat",
     });
 // this is where i am trying to dispatching the actions to store all the users available received and conversations that happend or involved the user
-    socketHeader.on('new_socket_connection', ({users,conversations}) => {
+    socketHeader.on('new_socket_connection', ({users}) => {
      
       dispatch(usersConnectionModify(users));
     });
@@ -48,11 +48,16 @@ const Header = () => {
     socketConversation.current.on('create_conversations',(conversations)=>{
       console.log(conversations)
     })
+    
+    socketConversation.current.on("all_conversations_registered",(conversations)=>{
+      dispatch(addConversationsToStore(conversations))
+    })
 
     return () => {
       socketHeader.off('new_socket_connection');
       socketHeader.off("create_conversations")
       socketConversation.current.off("create_conversations")
+      socketConversation.current.off("all_conversations_registered")
       socketHeader.disconnect();
     };
   }, [dispatch, user]);

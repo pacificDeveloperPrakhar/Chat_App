@@ -75,7 +75,7 @@ const uniqueUsernames = [...new Set(usernameArray)];
 const sortedParticipants = participantsArray.sort();
 const usersArray = [me, ...users].filter(
   (user, index, self) =>
-    index === self.findIndex(u => u.socketId === user.socketId)
+    index === self.findIndex(u => u.id === user.id)
 );
 
 
