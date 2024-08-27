@@ -10,7 +10,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import { Info, Chat, PersonSearch, Login, Close } from '@mui/icons-material';  // Import Material Design Icons
 import ContactSection from "./ContactSection"
-import { addConversationsToStore } from '../slices/conversationSlice';
+import { restoreConversationsSession } from '../slices/conversationSlice';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -49,8 +49,8 @@ const Header = () => {
       console.log(conversations)
     })
     
-    socketConversation.current.on("all_conversations_registered",(conversations)=>{
-      dispatch(addConversationsToStore(conversations))
+    socketConversation.current.on("all_conversations_registered",async (conversations)=>{
+     await dispatch(restoreConversationsSession(conversations))
     })
 
     return () => {

@@ -5,7 +5,7 @@ const {message,conversations,users}=require("../db/schema/schema.js");
 const { eq,asc, desc } = require('drizzle-orm');
 const appError = require('../utils/appErrors.js');
 exports.getAllChatsInAConversation=catchAsync(async function(req,res,next){
-    console.log("chat route hit")
+    console.log("--------------------------------------------------------------------chat route hit")
    const {conversationId}=req.params;
    const {limit,page}=req.query;
    let conversation,messages
