@@ -17,12 +17,9 @@ export const restoreConversationsSession=createAsyncThunk("conversations/restore
         const chatsUrl=(conversationId)=>`http://127.0.0.1:3124/conversation/${conversationId}/chats?limit=10&page=1`
         const messagesPayload=[]
         for(let i=0;i<state.conversations.conversations.length;i++){
-            console.log("0.1")
             try{
-            console.log("1")
             state.conversations.conversations[i].isAdding=true;
             state.conversations.conversations[i].isLoading=true;
-            console.log("2")
             const {data:{messages}}=await axios.get(chatsUrl(state.conversations.conversations[i].id,state.conversations.conversations.chatLoadCounter))
             messagesPayload.push({id:state.conversations.conversations[i].id,messages})
         }
@@ -52,12 +49,15 @@ const conversationSlice=createSlice({
                 conversations=conversations.map((conversation)=>{
                     let profileUrls
                     const doesHaveProfileUrl=(conversation?.profileUrl)?true:false;
+                    let participantsNames
                     if(!doesHaveProfileUrl){
                         // this field will store the image url of all other users other than user currently sessioned
                         profileUrls=(conversation.participants.filter(({id})=>id!=state.userIdCurrentlySessioned)).map((participant)=>participant?.profileUrl)
+                        // this will filter the participant accept the participant itself
+                        participantsNames=(conversation.participants.filter(({id})=>id!=state.userIdCurrentlySessioned)).map(participant=>participant?.username)
                     }
                     const isGroup=(conversation?.participants?.length>2)?true:false;
-                    return {chatRetrieved:false,chatLoadCounter:1,isLoading:false,error:null,isAdding:false,isTyping:null,inChat:null,isGroup,profileUrls,doesHaveProfileUrl,chats:[],error:null,...conversation}
+                    return {participantsNames,chatRetrieved:false,chatLoadCounter:1,isLoading:false,error:null,isAdding:false,isTyping:null,inChat:null,isGroup,profileUrls,doesHaveProfileUrl,chats:[],error:null,...conversation}
                     
                 })
                 state.conversations=[...state.conversations,...conversations]

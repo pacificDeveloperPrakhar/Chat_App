@@ -11,54 +11,43 @@ import IconButton from '@mui/material/IconButton';
 import { Info, Chat, PersonSearch, Login, Close } from '@mui/icons-material';  // Import Material Design Icons
 import ContactSection from "./ContactSection"
 import { restoreConversationsSession } from '../slices/conversationSlice';
-
+import socket ,{setSocket} from '../socket';
 const Header = () => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
   const users = useSelector(state => state.user.users);
   const [drawerOpen, setDrawerOpen] = React.useState(false);  // State to control drawer
 
-  let socketHeader;
-  const socketConversation=useRef(null);
-
   useEffect(() => {
+    console.log("header mounted")
     if(!user)
       return
-    socketHeader = io("http://127.0.0.1:3124/%HEADERS%", {
-      extraHeaders: {
-        "userId": JSON.stringify(user),
-      },
-      path: "/chat",
-    });
     // another socket for the conversation creation and the conversation about receiver
-    socketConversation.current = io("http://127.0.0.1:3124", {
-      extraHeaders: {
-        "userId": JSON.stringify(user),
-      },
-      path: "/chat",
-    });
+  console.log(user)
+  setSocket({user}) 
+  socket.connect()
 // this is where i am trying to dispatching the actions to store all the users available received and conversations that happend or involved the user
-    socketHeader.on('new_socket_connection', ({users}) => {
+    socket.on('new_socket_connection', ({users}) => {
      
       dispatch(usersConnectionModify(users));
     });
-    socketHeader.on('create_conversations',(conversations)=>{
+    socket.on('create_conversations',(conversations)=>{
       console.log(conversations)
     })
-    socketConversation.current.on('create_conversations',(conversations)=>{
+    socket.on('create_conversations',(conversations)=>{
       console.log(conversations)
     })
     
-    socketConversation.current.on("all_conversations_registered",async (conversations)=>{
+    socket.on("all_conversations_registered",async (conversations)=>{
      await dispatch(restoreConversationsSession(conversations))
     })
-
     return () => {
-      socketHeader.off('new_socket_connection');
-      socketHeader.off("create_conversations")
-      socketConversation.current.off("create_conversations")
-      socketConversation.current.off("all_conversations_registered")
-      socketHeader.disconnect();
+      console.log("dismounted")
+      socket.off('new_socket_connection');
+      socket.off("create_conversations")
+      socket.off("create_conversations")
+      socket.off("all_conversations_registered")
+      socket.disconnect()
     };
   }, [dispatch, user]);
 
@@ -78,7 +67,7 @@ const Header = () => {
         </IconButton>
       </div>
       {/* Contact Section */}
-      <ContactSection onParticipantSelect={(participants,setSelectedParticipants) =>{ socketConversation.current.emit("create_conversations", {me:user,users:participants})}} />
+      <ContactSection onParticipantSelect={(participants,setSelectedParticipants) =>{ socket.emit("create_conversations", {me:user,users:participants})}} />
     </Box>
   );
 

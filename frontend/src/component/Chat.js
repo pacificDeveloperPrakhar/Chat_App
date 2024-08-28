@@ -4,7 +4,7 @@ import io from "socket.io-client";
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
-
+import socket, { setSocket } from "../socket";
 // StyledBadge for online status
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-dot': {
@@ -18,27 +18,21 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 const ChatApp = () => {
-  const [selectedParticipant, setSelectedParticipant] = useState(null);
+  const [selectedConversation, setSelectedConversation] = useState(null);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  function stateChangedEmit(stateChanged){
+    socket.emit("state_changed_for_room",{userId:user.id,conversationId:selectedConversation.id,...stateChanged})
+  }
   const user = useSelector(state => state.user.user);
-  const users = useSelector(state => state.user.users); // Assuming `users` is the list of all users
-
-  let socket;
+  const conversations = useSelector(state => state.conversations.conversations);
+  
 
   useEffect(() => {
-    socket = io("http://127.0.0.1:3124", {
-      extraHeaders: {
-        "userId": JSON.stringify(user)
-      },
-      path: "/chat"
-    });
-
-    socket.on("chatMessage", (msg) => {
-      setMessages((prevMessages) => [...prevMessages, msg]);
-    });
-
+    console.log("chat mounted")
+    console.log(user)
+   setSocket({user})
     socket.on("onlineUsers", (users) => {
       setOnlineUsers(users);
     });
@@ -46,34 +40,59 @@ const ChatApp = () => {
     return () => {
       socket.off("chatMessage");
       socket.off("onlineUsers");
-      socket.disconnect();
     };
   }, [user]);
 
   const sendMessage = (e) => {
     e.preventDefault();
     if (message.trim()) {
-      socket.emit("chatMessage", { message, userId: user.id, recipientId: selectedParticipant.id });
+      socket.emit("chatMessage", { message, userId: user.id, conversationId: selectedConversation.id });
       setMessage('');
     }
   };
 
-  const getOnlineStatus = (user) => {
-    return user.userStatus=="active" ? 'dot' : 'dotOffline';
+  const getOnlineStatus = (participant) => {
+    return onlineUsers.includes(participant.id) ? 'dot' : 'dotOffline';
+  };
+
+  const renderConversationTitle = (conversation) => {
+    if (conversation.participantsNames.length === 1) {
+      return conversation.participantsNames[0];
+    }
+    return conversation.participantsNames.join(', ');
+  };
+
+  const renderProfilePictures = (conversation) => {
+    if (conversation.profileUrls && conversation.profileUrls.length > 1) {
+      return (
+        <div className="flex -space-x-2">
+          {conversation.profileUrls.slice(0, 2).map((url, index) => (
+            <Avatar key={index} src={url} alt="profile" sx={{ width: 40, height: 40 }} />
+          ))}
+        </div>
+      );
+    }
+    return (
+      <Avatar
+        src={conversation.profileUrls[0] || null}
+        alt={renderConversationTitle(conversation)}
+        sx={{ width: 56, height: 56 }}
+      />
+    );
   };
 
   return (
     <div className="flex h-screen">
-      {/* Contact Section */}
+      {/* Conversations Section */}
       <div className="w-1/4 bg-gray-100 p-4">
-        <h2 className="text-xl font-bold mb-4">Contacts</h2>
+        <h2 className="text-xl font-bold mb-4">Conversations</h2>
         <ul>
-          {users?.map((participant) => (
+          {conversations?.map((conversation) => (
             <li
-              key={participant.id}
-              onClick={() => setSelectedParticipant(participant)}
+              key={conversation.id}
+              onClick={() => setSelectedConversation(conversation)}
               className={`p-2 cursor-pointer rounded-lg mb-2 flex items-center ${
-                selectedParticipant?.id === participant.id
+                selectedConversation?.id === conversation.id
                   ? 'bg-orange-600 text-white'
                   : 'bg-white text-black'
               }`}
@@ -81,11 +100,11 @@ const ChatApp = () => {
               <StyledBadge
                 overlap="circular"
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                variant={getOnlineStatus(participant)}
+                variant={getOnlineStatus(conversation.participants[0])} // Assuming the first participant
               >
-                <Avatar alt={participant.username} src={participant.profileUrl} />
+                {renderProfilePictures(conversation)}
               </StyledBadge>
-              <span className="ml-2">{participant.username}</span>
+              <span className="ml-2">{renderConversationTitle(conversation)}</span>
             </li>
           ))}
         </ul>
@@ -93,16 +112,12 @@ const ChatApp = () => {
 
       {/* Chat Section */}
       <div className="flex-grow flex flex-col bg-white">
-        {selectedParticipant ? (
+        {selectedConversation ? (
           <>
             {/* Chat Header */}
             <div className="p-4 bg-orange-600 text-white flex items-center">
-              <Avatar
-                alt={selectedParticipant.username}
-                src={selectedParticipant.profileUrl}
-                sx={{ width: 56, height: 56 }}
-              />
-              <h1 className="ml-4">{selectedParticipant.username}</h1>
+              {renderProfilePictures(selectedConversation)}
+              <h1 className="ml-4">{renderConversationTitle(selectedConversation)}</h1>
             </div>
 
             {/* Chat Messages Section */}
@@ -135,7 +150,7 @@ const ChatApp = () => {
               <input
                 type="text"
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) =>{ setMessage(e.target.value);stateChangedEmit({isTyping:true})}}
                 className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-600"
                 placeholder="Type a message..."
               />
@@ -149,7 +164,7 @@ const ChatApp = () => {
           </>
         ) : (
           <div className="flex items-center justify-center flex-grow">
-            <p>Select a participant to start chatting.</p>
+            <p>Select a conversation to start chatting.</p>
           </div>
         )}
       </div>
