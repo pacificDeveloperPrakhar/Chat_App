@@ -125,3 +125,14 @@ exports.createRoomForConversation=async function(conversation,io,socketCollectio
 // the new conversation has been created and they have been included
  io.in(conversation?.[0].roomName).emit("create_conversations",conversation?.[0])
 }
+
+exports.storeChatAndEmit=async function(io,mssg){
+    const {userId,conversationId}=mssg;
+   const user=(await db.select().from(users).where(eq(users.id,userId)))[0]
+   if(!user)
+    throw new appError("no user was found in the database",403)
+   const conversation=(await db.select().from(conversations).where(eq(conversations.id,conversationId))[0])
+   if(!conversation)
+    throw new appError("no conversation does exist in the database",403)
+  
+}

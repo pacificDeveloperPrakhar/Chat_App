@@ -57,13 +57,13 @@ io.on('connection', async (socket) => {
     })
 
     // Chat message handling
-    socket.on('chatMessage', (msg) => {
-        console.log(msg)
-        if (socket.user) {
-            io.emit('chatMessage', { user: socket.user.username, message: msg })
-        }
+    socket.on('chatMessage', (mssg) => {
+        storeChatAndEmit(io,mssg)
     })
-
+    // to handle the typing and and the in chat feature
+    socket.on("state_changed_for_room",(state_respnse)=>{
+        socket.in(state_respnse.conversationId).emit("state_changed_for_room",state_respnse)
+    })
     // Handle disconnection
     socket.on('disconnect', async () => {
         await socketDisconnectedFromUser(socket?.request?.user?.id, socket.id)

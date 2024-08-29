@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import socket, { setSocket } from "../socket";
+
 // StyledBadge for online status
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-dot': {
@@ -17,38 +18,71 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
+// Debounce utility function
+function debounce(func, delay) {
+  let timeoutId;
+  return function(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
 const ChatApp = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  function stateChangedEmit(stateChanged){
-    socket.emit("state_changed_for_room",{userId:user.id,conversationId:selectedConversation.id,...stateChanged})
-  }
+  const [typingUser, setTypingUser] = useState(null);
+
   const user = useSelector(state => state.user.user);
+  const users = useSelector(state => state.user.users);
   const conversations = useSelector(state => state.conversations.conversations);
-  
 
   useEffect(() => {
-    console.log("chat mounted")
-    console.log(user)
-   setSocket({user})
+    setSocket({ user });
+
     socket.on("onlineUsers", (users) => {
       setOnlineUsers(users);
+    });
+
+    socket.on("state_changed_for_room", (data) => {
+      const { isTyping, userId } = data;
+      if (isTyping) {
+        const typingUser = users.find(user => user.id === userId);
+        setTypingUser(typingUser);
+        setTimeout(() => setTypingUser(null), 800);
+      } else {
+        setTypingUser(null);
+      }
     });
 
     return () => {
       socket.off("chatMessage");
       socket.off("onlineUsers");
+      socket.off("state_changed_for_room");
     };
-  }, [user]);
+  }, [user, users]);
 
   const sendMessage = (e) => {
     e.preventDefault();
     if (message.trim()) {
-      socket.emit("chatMessage", { message, userId: user.id, conversationId: selectedConversation.id });
+      socket.emit("chatMessage", { text:message, userId: user.id, conversationId: selectedConversation.id });
       setMessage('');
+      socket.emit("state_changed_for_room", { userId: user.id, conversationId: selectedConversation.id, isTyping: false });
     }
+  };
+
+  // Debounce the handleTyping function
+  const debouncedTyping = useCallback(
+    debounce(() => {
+      socket.emit("state_changed_for_room", { userId: user.id, conversationId: selectedConversation.id, isTyping: true });
+    }, 300),
+    [user, selectedConversation]
+  );
+
+  const handleTyping = (e) => {
+    setMessage(e.target.value);
+    debouncedTyping();
   };
 
   const getOnlineStatus = (participant) => {
@@ -140,6 +174,12 @@ const ChatApp = () => {
                   </div>
                 </div>
               ))}
+              {/* Display typing indicator */}
+              {typingUser && (
+                <div className="flex items-center mt-2">
+                  <span className="text-gray-500">{typingUser.username} is typing...</span>
+                </div>
+              )}
             </div>
 
             {/* Message Input Section */}
@@ -150,7 +190,7 @@ const ChatApp = () => {
               <input
                 type="text"
                 value={message}
-                onChange={(e) =>{ setMessage(e.target.value);stateChangedEmit({isTyping:true})}}
+                onChange={handleTyping}
                 className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-600"
                 placeholder="Type a message..."
               />
