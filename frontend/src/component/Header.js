@@ -10,14 +10,17 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import { Info, Chat, PersonSearch, Login, Close } from '@mui/icons-material';  // Import Material Design Icons
 import ContactSection from "./ContactSection"
-import { restoreConversationsSession } from '../slices/conversationSlice';
+import { restoreConversationsSession ,newChatReceived} from '../slices/conversationSlice';
+
 import socket ,{setSocket} from '../socket';
+import { message } from '../../../src/db/schema/schema';
 const Header = () => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
   const users = useSelector(state => state.user.users);
+  const conversations=useSelector(state=>state.conversations)
   const [drawerOpen, setDrawerOpen] = React.useState(false);  // State to control drawer
-
+  console.log(conversations.conversations)
   useEffect(() => {
     console.log("header mounted")
     if(!user)
@@ -31,15 +34,14 @@ const Header = () => {
      
       dispatch(usersConnectionModify(users));
     });
-    socket.on('create_conversations',(conversations)=>{
-      console.log(conversations)
-    })
-    socket.on('create_conversations',(conversations)=>{
-      console.log(conversations)
-    })
+
     
-    socket.on("all_conversations_registered",async (conversations)=>{
-     await dispatch(restoreConversationsSession(conversations))
+    socket.on("all_conversations_registered",async (conversations_all)=>{
+     await dispatch(restoreConversationsSession(conversations_all))
+    })
+    socket.on("chatMessage",(message)=>{
+      dispatch(newChatReceived(message))
+      console.log(conversations)
     })
     return () => {
       console.log("dismounted")
@@ -47,6 +49,7 @@ const Header = () => {
       socket.off("create_conversations")
       socket.off("create_conversations")
       socket.off("all_conversations_registered")
+      socket.off("chatMessage")
       socket.disconnect()
     };
   }, [dispatch, user]);

@@ -11,9 +11,9 @@ exports.getAllChatsInAConversation=catchAsync(async function(req,res,next){
    if(conversationId)
    conversation=db.select().from(conversations).where(eq(conversations.id,conversationId))
    if(!conversation)
-   return next(new appError("this conversation does exist in the database",400));
-   messages=await db.select().from(message).where(eq(message.id,conversationId)).orderBy(desc(message.sendAt)).limit(limit).offset(limit*(page-1))
-   const length=message.length
+   return next(new appError("this conversation does not exists in the database",400));
+   messages=await db.select().from(message).where(eq(message.conversationsId,conversationId)).orderBy(desc(message.sendAt)).limit(limit).offset(limit*(page-1))
+   const length=messages.length
    res.status(200).json({
     status:"ok",
     data:{

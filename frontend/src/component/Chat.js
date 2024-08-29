@@ -32,8 +32,7 @@ const ChatApp = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [typingUser, setTypingUser] = useState(null);
-
+  const [typingUser, setTypingUser] = useState(null); 
   const user = useSelector(state => state.user.user);
   const users = useSelector(state => state.user.users);
   const conversations = useSelector(state => state.conversations.conversations);
@@ -57,7 +56,7 @@ const ChatApp = () => {
     });
 
     return () => {
-      socket.off("chatMessage");
+
       socket.off("onlineUsers");
       socket.off("state_changed_for_room");
     };

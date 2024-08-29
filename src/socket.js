@@ -2,7 +2,7 @@ const server = require("./app.js")
 const Socket = require('socket.io')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
-const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays, getSocketUsers, getTheConversations, getAllConversations, createRoomForConversation } = require("./utils/socketUtils.js")
+const { socketConnectedToUser, socketDisconnectedFromUser, clearSocketArrays, getSocketUsers, getTheConversations, getAllConversations, createRoomForConversation,storeChatAndEmit} = require("./utils/socketUtils.js")
 const { extractUser } = require("./controllers/socketController.js")
 const { message } = require("./db/schema/schema.js")
 
@@ -42,6 +42,11 @@ io.engine.use(sessionMiddleware)
 io.use(extractUser)
 
 io.on('connection', async (socket) => {
+        // Register all conversations the user is part of
+        const conversations = await getAllConversations(socket?.request?.user.id)
+        conversations.forEach(conversation => socket.join(conversation?.roomName))
+        socket.emit("all_conversations_registered", conversations)
+
     await socketConnectedToUser(socket?.request?.user?.id, socket.id)
     const users = await getSocketUsers({})
     io.emit("new_socket_connection", { users })
@@ -57,8 +62,8 @@ io.on('connection', async (socket) => {
     })
 
     // Chat message handling
-    socket.on('chatMessage', (mssg) => {
-        storeChatAndEmit(io,mssg)
+    socket.on('chatMessage', async (mssg) => {
+        await storeChatAndEmit(socket,io,mssg)
     })
     // to handle the typing and and the in chat feature
     socket.on("state_changed_for_room",(state_respnse)=>{
@@ -72,11 +77,6 @@ io.on('connection', async (socket) => {
         delete socketCollection[socket.id]
         console.log('socket disconnected:', socket.id)
     })
-
-    // Register all conversations the user is part of
-    const conversations = await getAllConversations(socket?.request?.user.id)
-    conversations.forEach(conversation => socket.join(conversation?.roomName))
-    socket.emit("all_conversations_registered", conversations)
 })
 
 // Clear socket arrays on server start

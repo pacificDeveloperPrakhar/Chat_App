@@ -55,15 +55,15 @@ const conversations = pgTable("conversations", {
 // indexes are stored in a data structure which involves the usage of b tree which helps in the better and efficent sortng retirieving of data
 const message = pgTable("message", {
   id: uuid("id").defaultRandom().primaryKey(),
-  senderId: uuid('senderId').references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  senderId: uuid('sender_id').references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   text: varchar('text', { length: 255 }),
   file: varchar("file", { length: 255 }),
-  conversationsId: uuid('conversationsId').references(() => conversations.id, { onDelete: "cascade", onUpdate: "cascade" }),
-  targettedUser: jsonb("targettedUser").default('[]').notNull(), // targettedUser will have [{userId, readAt}]
+  conversationsId: uuid('conversations_id').references(() => conversations.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  targettedUser: jsonb("targetted_user").default('[]').notNull(), // targettedUser will have [{userId, readAt}]
   sendAt: timestamp('send_at').defaultNow(),
-  readBy: jsonb("readBy").default('[]').notNull(),
+  readBy: jsonb("read_by").default('[]').notNull(),
   type: messageTypeEnum("type").default("message"),
-  profilePic:varchar('text', { length: 255 }),
+  profilePic:varchar('profile_pic', { length: 255 }),
 }, (message) => {
   return {
     // Index on conversationsId for faster retrieval of messages by conversation

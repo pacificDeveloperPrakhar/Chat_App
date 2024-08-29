@@ -1,6 +1,6 @@
 
 const { db } = require("../db/db_connection");
-const { users,conversations } = require("../db/schema/schema")
+const { users,conversations,message:messages } = require("../db/schema/schema")
 const { eq ,and,arrayContains,inArray} = require("drizzle-orm");
 const appError = require("./appErrors");
 
@@ -126,13 +126,27 @@ exports.createRoomForConversation=async function(conversation,io,socketCollectio
  io.in(conversation?.[0].roomName).emit("create_conversations",conversation?.[0])
 }
 
-exports.storeChatAndEmit=async function(io,mssg){
-    const {userId,conversationId}=mssg;
-   const user=(await db.select().from(users).where(eq(users.id,userId)))[0]
-   if(!user)
-    throw new appError("no user was found in the database",403)
-   const conversation=(await db.select().from(conversations).where(eq(conversations.id,conversationId))[0])
-   if(!conversation)
-    throw new appError("no conversation does exist in the database",403)
+exports.storeChatAndEmit=async function(socket,io,mssg){
+  const {userId,conversationId}=mssg;
+  console.log(io)
   
+    const user=(await db.select({senderId:users.id,profileUrl:users.profileUrl}).from(users).where(eq(users.id,userId)))[0]
+    if(!user)
+      throw new appError("no user was found in the database",403)
+    const conversation=(await db.select().from(conversations).where(eq(conversations.id,conversationId)))[0]
+    if(!conversation)
+      throw new appError("no conversation does exist in the database",403)
+    // preparing the message's field prior to storing it into the database
+    const message={}
+   message.profilePic=user.profileUrl||"";
+   message.senderId=user.senderId;
+   message.conversationsId=conversation.id;
+   if(mssg.text)
+    message.text=mssg.text;
+   if(mssg.file)
+    message.file=mssg.file;
+  const resultingMessage=(await db.insert(messages).values(message).returning({text:messages.text,file:messages.file,senderId:messages.senderId,conversationId:messages.conversationsId,type:messages.type,profilePic:messages.profilePic}))[0]
+  console.log(conversation.roomName)
+  console.log(socket.rooms)
+  io.in(conversation.roomName).emit("chatMessage",resultingMessage)
 }

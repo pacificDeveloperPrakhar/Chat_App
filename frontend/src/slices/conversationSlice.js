@@ -20,7 +20,8 @@ export const restoreConversationsSession=createAsyncThunk("conversations/restore
             try{
             state.conversations.conversations[i].isAdding=true;
             state.conversations.conversations[i].isLoading=true;
-            const {data:{messages}}=await axios.get(chatsUrl(state.conversations.conversations[i].id,state.conversations.conversations.chatLoadCounter))
+            const {data:{data:{messages}}}=await axios.get(chatsUrl(state.conversations.conversations[i].id,state.conversations.conversations.chatLoadCounter))
+            console.log(messages)
             messagesPayload.push({id:state.conversations.conversations[i].id,messages})
         }
         catch(err){
@@ -78,6 +79,10 @@ const conversationSlice=createSlice({
                 console.log(state)
                 return state
             }
+        },
+        newChatReceived:(previousState,action)=>{
+            const chat=action.payload
+            previousState?.conversations?.[0]?.chats?.push(action.payload)
         }
     },
     extraReducers:(builder)=>{
@@ -110,5 +115,5 @@ const conversationSlice=createSlice({
     }
 })
 
-export const {addConversationsToStore} = conversationSlice.actions
+export const {addConversationsToStore ,newChatReceived} = conversationSlice.actions
 export default conversationSlice.reducer
