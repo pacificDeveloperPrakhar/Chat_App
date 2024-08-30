@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback ,useRef} from "react";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 import { styled } from '@mui/material/styles';
@@ -30,7 +30,7 @@ const ChatApp = () => {
   const [message, setMessage] = useState('');
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [typingUser, setTypingUser] = useState(null);
-  
+  const chatLayout=useRef(null)
   const user = useSelector(state => state.user.user);
   const users = useSelector(state => state.user.users);
   const conversations = useSelector(state => state.conversations.conversations);
@@ -39,7 +39,11 @@ const ChatApp = () => {
 
   useEffect(() => {
     setSocket({ user });
-
+    console.log("this is something")
+    if (chatLayout.current) {
+      chatLayout.current.scrollTop = chatLayout.current.scrollHeight;
+    }
+    
     socket.on("onlineUsers", (users) => {
       setOnlineUsers(users);
     });
@@ -59,7 +63,7 @@ const ChatApp = () => {
       socket.off("onlineUsers");
       socket.off("state_changed_for_room");
     };
-  }, [user, users]);
+  }, [user, users,conversations,selectedConversation]);
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -119,7 +123,6 @@ const ChatApp = () => {
 
   // Sort messages from earliest to latest
   const sortedMessages = [...selectedConversation.chats].sort((a, b) => new Date(a.sendAt) - new Date(b.sendAt));
-
   return sortedMessages.map((msg) => (
     <div
       key={msg.id}
@@ -174,7 +177,7 @@ const ChatApp = () => {
               <h1 className="ml-4">{renderConversationTitle(selectedConversation)}</h1>
             </div>
 
-            <div className="flex-grow p-4 overflow-y-auto">
+            <div className="flex-grow p-4 overflow-y-auto" ref={chatLayout}>
               {renderMessages()}
               {typingUser && (
                 <div className="flex items-center mt-2">

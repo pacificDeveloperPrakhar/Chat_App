@@ -15,7 +15,7 @@ export const restoreConversationsSession=createAsyncThunk("conversations/restore
 
         dispatch(conversationSlice.actions.addConversationsToStore(payload));
         const state=getState();
-        const chatsUrl=(conversationId)=>`http://127.0.0.1:3124/conversation/${conversationId}/chats?limit=10&page=1`
+        const chatsUrl=(conversationId)=>`http://127.0.0.1:3124/conversation/${conversationId}/chats?limit=13&page=1`
         const messagesPayload=[]
         for(let i=0;i<state.conversations.conversations.length;i++){
             try{
