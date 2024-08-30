@@ -115,27 +115,28 @@ const ChatApp = () => {
   };
 
   const renderMessages = () => {
-    if (!selectedConversation || !selectedConversation.chats) return null;
+  if (!selectedConversation || !selectedConversation.chats) return null;
 
-    const sortedMessages = [...selectedConversation.chats].sort((a, b) => new Date(b.sendAt) - new Date(a.sendAt));
+  // Sort messages from earliest to latest
+  const sortedMessages = [...selectedConversation.chats].sort((a, b) => new Date(a.sendAt) - new Date(b.sendAt));
 
-    return sortedMessages.map((msg) => (
+  return sortedMessages.map((msg) => (
+    <div
+      key={msg.id}
+      className={`flex ${msg.senderId === user.id ? "justify-end" : "justify-start"}`}
+    >
       <div
-        key={msg.id}
-        className={`flex ${msg.senderId === user.id ? "justify-end" : "justify-start"}`}
+        className={`${
+          msg.senderId === user.id
+            ? "bg-orange-400 text-white ml-4"
+            : "bg-white text-gray-800 mr-4"
+        } p-3 rounded-xl max-w-xs shadow-lg`}
       >
-        <div
-          className={`${
-            msg.senderId === user.id
-              ? "bg-orange-400 text-white ml-4"
-              : "bg-white text-gray-800 mr-4"
-          } p-3 rounded-xl max-w-xs shadow-lg`}
-        >
-          {msg.text}
-        </div>
+        {msg.text}
       </div>
-    ));
-  };
+    </div>
+  ));
+};
 
   return (
     <div className="flex h-screen">

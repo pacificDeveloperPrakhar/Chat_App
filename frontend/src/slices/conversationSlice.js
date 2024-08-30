@@ -87,7 +87,7 @@ const conversationSlice=createSlice({
         
             if (conversation) {
                 // Update the conversation's chats array by adding the new chat at the beginning
-                let chats = [chat, ...conversation.chats];
+                let chats = [...conversation.chats,chat];
                 let chatsLength=chats.length;
             
                 conversation={...conversation,chats,chatsLength}
