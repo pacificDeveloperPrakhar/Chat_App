@@ -15,7 +15,6 @@ export const restoreConversationsSession=createAsyncThunk("conversations/restore
 
         dispatch(conversationSlice.actions.addConversationsToStore(payload));
         const state=getState();
-        console.log(state)
         const chatsUrl=(conversationId)=>`http://127.0.0.1:3124/conversation/${conversationId}/chats?limit=10&page=1`
         const messagesPayload=[]
         for(let i=0;i<state.conversations.conversations.length;i++){
@@ -90,7 +89,7 @@ const conversationSlice=createSlice({
                 // Update the conversation's chats array by adding the new chat at the beginning
                 let chats = [chat, ...conversation.chats];
                 let chatsLength=chats.length;
-                console.log(chatsLength)
+            
                 conversation={...conversation,chats,chatsLength}
             }
             conversations=[conversation,...conversations]

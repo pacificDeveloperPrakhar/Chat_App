@@ -21,11 +21,9 @@ const Header = () => {
   const conversations=useSelector(state=>state.conversations)
   const [drawerOpen, setDrawerOpen] = React.useState(false);  // State to control drawer
   useEffect(() => {
-    console.log("header mounted")
     if(!user)
       return
     // another socket for the conversation creation and the conversation about receiver
-  console.log(user)
   setSocket({user}) 
   socket.connect()
 // this is where i am trying to dispatching the actions to store all the users available received and conversations that happend or involved the user
@@ -42,7 +40,6 @@ const Header = () => {
       dispatch(newChatReceived(message))
     })
     return () => {
-      console.log("dismounted")
       socket.off('new_socket_connection');
       socket.off("create_conversations")
       socket.off("create_conversations")
