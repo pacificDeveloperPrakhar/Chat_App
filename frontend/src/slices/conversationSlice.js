@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice,current } from "@reduxjs/toolkit";
 import axios from "axios";
+import {produce,current} from "immer"
 const conversationState={
     userIdCurrentlySessioned:localStorage.getItem("user")?JSON.parse(localStorage.getItem("user")).id:null,
     conversations:[],
@@ -14,6 +15,7 @@ export const restoreConversationsSession=createAsyncThunk("conversations/restore
 
         dispatch(conversationSlice.actions.addConversationsToStore(payload));
         const state=getState();
+        console.log(state)
         const chatsUrl=(conversationId)=>`http://127.0.0.1:3124/conversation/${conversationId}/chats?limit=10&page=1`
         const messagesPayload=[]
         for(let i=0;i<state.conversations.conversations.length;i++){
@@ -21,11 +23,10 @@ export const restoreConversationsSession=createAsyncThunk("conversations/restore
             state.conversations.conversations[i].isAdding=true;
             state.conversations.conversations[i].isLoading=true;
             const {data:{data:{messages}}}=await axios.get(chatsUrl(state.conversations.conversations[i].id,state.conversations.conversations.chatLoadCounter))
-            console.log(messages)
             messagesPayload.push({id:state.conversations.conversations[i].id,messages})
         }
         catch(err){
-            console.log("3")
+
             console.log(err)
             messagesPayload.push({id:state.conversations.conversations[i].id,error:rejectWithValue(err)})
         }
@@ -33,7 +34,6 @@ export const restoreConversationsSession=createAsyncThunk("conversations/restore
     return messagesPayload
 }
 catch(err){
-    console.log("4")
     console.log(err)
     return rejectWithValue(err)
 }
@@ -58,7 +58,7 @@ const conversationSlice=createSlice({
                         participantsNames=(conversation.participants.filter(({id})=>id!=state.userIdCurrentlySessioned)).map(participant=>participant?.username)
                     }
                     const isGroup=(conversation?.participants?.length>2)?true:false;
-                    return {participantsNames,chatRetrieved:false,chatLoadCounter:1,isLoading:false,error:null,isAdding:false,isTyping:null,inChat:null,isGroup,profileUrls,doesHaveProfileUrl,chats:[],error:null,...conversation}
+                    return {chatsLength:0,participantsNames,chatRetrieved:false,chatLoadCounter:1,isLoading:false,error:null,isAdding:false,isTyping:null,inChat:null,isGroup,profileUrls,doesHaveProfileUrl,chats:[],error:null,...conversation}
                     
                 })
                 state.conversations=[...state.conversations,...conversations]
@@ -76,14 +76,31 @@ const conversationSlice=createSlice({
                 state.conversations=state.conversations.filter((convo,index,self)=>{
                     return index===self.findIndex((c)=>c.id==convo.id)
                 })
-                console.log(state)
                 return state
             }
         },
-        newChatReceived:(previousState,action)=>{
-            const chat=action.payload
-            previousState?.conversations?.[0]?.chats?.push(action.payload)
+        newChatReceived: (previousState, action) => {
+            const chat = action.payload;
+            let conversations=[...current(previousState.conversations)]
+            // Find the conversation that matches the chat's conversationId
+            let conversation = conversations.find(convo => convo.id === chat.conversationId);
+            conversations = [...current(previousState.conversations)].filter(convo => convo.id !== chat.conversationId);
+        
+            if (conversation) {
+                // Update the conversation's chats array by adding the new chat at the beginning
+                let chats = [chat, ...conversation.chats];
+                let chatsLength=chats.length;
+                console.log(chatsLength)
+                conversation={...conversation,chats,chatsLength}
+            }
+            conversations=[conversation,...conversations]
+            const newState= {
+                ...current(previousState),
+                conversations
+            };
+            return (newState)
         }
+        
     },
     extraReducers:(builder)=>{
         builder.addCase(restoreConversationsSession.pending,(state)=>{
@@ -105,6 +122,7 @@ const conversationSlice=createSlice({
                 else{
                 conversation.chats=chats.messages||[]
                 conversation.chatRetrieved=true
+                conversation.chatsLength=chats?.messages?.length
                 conversation.chatLoadCounter=2}
                 conversation.isAdding=false
                 conversation.isLoading=false

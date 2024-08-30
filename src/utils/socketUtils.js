@@ -128,7 +128,6 @@ exports.createRoomForConversation=async function(conversation,io,socketCollectio
 
 exports.storeChatAndEmit=async function(socket,io,mssg){
   const {userId,conversationId}=mssg;
-  console.log(io)
   
     const user=(await db.select({senderId:users.id,profileUrl:users.profileUrl}).from(users).where(eq(users.id,userId)))[0]
     if(!user)
@@ -146,7 +145,5 @@ exports.storeChatAndEmit=async function(socket,io,mssg){
    if(mssg.file)
     message.file=mssg.file;
   const resultingMessage=(await db.insert(messages).values(message).returning({text:messages.text,file:messages.file,senderId:messages.senderId,conversationId:messages.conversationsId,type:messages.type,profilePic:messages.profilePic}))[0]
-  console.log(conversation.roomName)
-  console.log(socket.rooms)
   io.in(conversation.roomName).emit("chatMessage",resultingMessage)
 }

@@ -20,7 +20,6 @@ const Header = () => {
   const users = useSelector(state => state.user.users);
   const conversations=useSelector(state=>state.conversations)
   const [drawerOpen, setDrawerOpen] = React.useState(false);  // State to control drawer
-  console.log(conversations.conversations)
   useEffect(() => {
     console.log("header mounted")
     if(!user)
@@ -41,7 +40,6 @@ const Header = () => {
     })
     socket.on("chatMessage",(message)=>{
       dispatch(newChatReceived(message))
-      console.log(conversations)
     })
     return () => {
       console.log("dismounted")
