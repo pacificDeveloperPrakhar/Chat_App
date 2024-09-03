@@ -10,10 +10,9 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import { Info, Chat, PersonSearch, Login, Close } from '@mui/icons-material';  // Import Material Design Icons
 import ContactSection from "./ContactSection"
-import { restoreConversationsSession ,newChatReceived} from '../slices/conversationSlice';
+import { restoreConversationsSession ,newChatReceived,newConversationCreated} from '../slices/conversationSlice';
 
 import socket ,{setSocket} from '../socket';
-import { message } from '../../../src/db/schema/schema';
 const Header = () => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
@@ -21,14 +20,22 @@ const Header = () => {
   const conversations=useSelector(state=>state.conversations)
   const [drawerOpen, setDrawerOpen] = React.useState(false);  // State to control drawer
   useEffect(() => {
+
     if(!user)
       return
     // another socket for the conversation creation and the conversation about receiver
   setSocket({user}) 
+  window.addEventListener('beforeunload', (event) => {
+    // Emit an event to notify the server that the user is disconnecting
+    socket.disconnect()
+    
+    // Optional: If you want to display a confirmation dialog before closing
+    // event.returnValue = ''; // This is no longer recommended in modern browsers
+  });
   socket.connect()
 // this is where i am trying to dispatching the actions to store all the users available received and conversations that happend or involved the user
     socket.on('new_socket_connection', ({users}) => {
-     
+      console.log(users)
       dispatch(usersConnectionModify(users));
     });
 
@@ -36,12 +43,15 @@ const Header = () => {
     socket.on("all_conversations_registered",async (conversations_all)=>{
      await dispatch(restoreConversationsSession(conversations_all))
     })
+    socket.on("create_conversations",(convo)=>{
+      console.log(convo)
+      dispatch(newConversationCreated(convo))
+    })
     socket.on("chatMessage",(message)=>{
       dispatch(newChatReceived(message))
     })
     return () => {
       socket.off('new_socket_connection');
-      socket.off("create_conversations")
       socket.off("create_conversations")
       socket.off("all_conversations_registered")
       socket.off("chatMessage")

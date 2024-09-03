@@ -79,7 +79,7 @@ const usersArray = [me, ...users].filter(
 );
 
 
-  // Query the conversations table using Drizzle ORM and PostgreSQL JSONB comparison
+  // looking for the conversation if it exists
   const matchingConversations = await db.select().from(conversations)
     .where(
         eq(
@@ -113,7 +113,6 @@ exports.getAllConversations=async function (id) {
 // to create the room for initating the conversation and joining all the corresponding sockets of the users to that room`
 exports.createRoomForConversation=async function(conversation,io,socketCollection){
   const allSocketsForRoom=(await db.select({socketConnected:users.socketConnected}).from(users).where(inArray(users.id,conversation?.[0].participantsId)))
-  console.log(allSocketsForRoom)
  for(let i=0;i<allSocketsForRoom.length;i++){
   allSocketsForRoom[i].socketConnected.forEach((socketId=>{
     if(!socketCollection?.[socketId])

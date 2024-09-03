@@ -36,14 +36,20 @@ const ChatApp = () => {
   const conversations = useSelector(state => state.conversations.conversations);
 
   const selectedConversation = conversations.find(convo => convo.id === selectedConversationId);
+  const handleScroll = () => {
+    if (chatLayout.current && chatLayout.current.scrollTop === 0) {
+      console.log("Reached the top of the chat!");
+      // Trigger the desired event here, such as loading older messages
+      // Example: loadOlderMessages();
+    }
+  };
 
   useEffect(() => {
     setSocket({ user });
-    console.log("this is something")
     if (chatLayout.current) {
       chatLayout.current.scrollTop = chatLayout.current.scrollHeight;
     }
-    
+
     socket.on("onlineUsers", (users) => {
       setOnlineUsers(users);
     });
@@ -58,10 +64,17 @@ const ChatApp = () => {
         setTypingUser(null);
       }
     });
+    // Attaching the scroll event listener
+    if (chatLayout.current) {
+      chatLayout.current.addEventListener('scroll', handleScroll);
+    }
 
     return () => {
       socket.off("onlineUsers");
       socket.off("state_changed_for_room");
+      if (chatLayout.current) {
+        chatLayout.current.removeEventListener('scroll', handleScroll);
+      }
     };
   }, [user, users,conversations,selectedConversation]);
 
@@ -164,6 +177,8 @@ const ChatApp = () => {
                 {renderProfilePictures(conversation)}
               </StyledBadge>
               <span className="ml-2">{renderConversationTitle(conversation)}</span>
+              <br/>
+              
             </li>
           ))}
         </ul>

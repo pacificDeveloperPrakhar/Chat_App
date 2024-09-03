@@ -6,7 +6,6 @@ const { eq,asc, desc } = require('drizzle-orm');
 const appError = require('../utils/appErrors.js');
 exports.getAllChatsInAConversation=catchAsync(async function(req,res,next){
    const {conversationId}=req.params;
-   console.log(conversationId)
    let {limit,page}=req.query;
    limit=Number(limit);
    page=Number(page)
@@ -19,7 +18,7 @@ exports.getAllChatsInAConversation=catchAsync(async function(req,res,next){
 //    now sort the given array getting from the database from previous to recent
    messages=messages.sort((a,b)=>new Date(a.sendAt)-new Date(b.sendAt))
    const length=messages.length
-   console.log(length)
+
    res.status(200).json({
     status:"ok",
     data:{

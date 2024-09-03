@@ -73,7 +73,7 @@ io.on('connection', async (socket) => {
     socket.on('disconnect', async () => {
         await socketDisconnectedFromUser(socket?.request?.user?.id, socket.id)
         const updatedUsers = await getSocketUsers({})
-        io.emit("new_socket_connection", updatedUsers)
+        io.emit("new_socket_connection", {users:updatedUsers})
         delete socketCollection[socket.id]
         console.log('socket disconnected:', socket.id)
     })
