@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback ,useRef} from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import io from "socket.io-client";
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import socket, { setSocket } from "../socket";
+import {chatLoadMessages} from "../slices/conversationSlice"
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-dot': {
@@ -34,11 +35,13 @@ const ChatApp = () => {
   const user = useSelector(state => state.user.user);
   const users = useSelector(state => state.user.users);
   const conversations = useSelector(state => state.conversations.conversations);
-
+  const dispatch=useDispatch()
   const selectedConversation = conversations.find(convo => convo.id === selectedConversationId);
   const handleScroll = () => {
     if (chatLayout.current && chatLayout.current.scrollTop === 0) {
       console.log("Reached the top of the chat!");
+      console.log({id:selectedConversation.id,chatLoadCounter:selectedConversation.chatLoadCounter})
+      dispatch(chatLoadMessages({id:selectedConversation.id,chatLoadCounter:selectedConversation.chatLoadCounter,chatRetrieved:selectedConversation.chatRetrieved}))
       // Trigger the desired event here, such as loading older messages
       // Example: loadOlderMessages();
     }

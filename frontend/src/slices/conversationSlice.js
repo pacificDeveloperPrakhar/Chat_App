@@ -56,6 +56,25 @@ export const restoreConversationsSession = createAsyncThunk(
     }
   }
 );
+export const chatLoadMessages=createAsyncThunk("conversation/chatLoadOnScroll",async function(payload,{rejectWithValue,getState,dispatch}){
+const {id,chatLoadCounter,chatRetrieved}=payload
+const chatsUrl = (conversationId,loadCounter) =>
+  `http://127.0.0.1:3124/conversation/${conversationId}/chats?limit=13&page=${loadCounter}`;
+try{
+
+  const {
+    data: {
+      data: { messages },
+    },
+  } =await axios.get(chatsUrl(id,chatLoadCounter))
+  console.log(messages)
+  return messages
+}
+catch(err){
+  return rejectWithValue(err)
+}
+
+})
 
 const conversationSlice = createSlice({
   name: "conversations",
@@ -222,6 +241,9 @@ const conversationSlice = createSlice({
       state.isLoading = false;
       state.isAdding = false;
     });
+    builder.addCase(chatLoadMessages.rejected,(state,action)=>{ console.log("error has been encountered")})
+    builder.addCase(chatLoadMessages.pending,(state,action)=>{console.log("chat is being retrieved right now")})
+    builder.addCase(chatLoadMessages.fulfilled,(state,action)=>{console.log(action.payload)})
   },
 });
 
