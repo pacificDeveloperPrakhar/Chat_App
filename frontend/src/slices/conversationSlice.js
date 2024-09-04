@@ -56,25 +56,27 @@ export const restoreConversationsSession = createAsyncThunk(
     }
   }
 );
-export const chatLoadMessages=createAsyncThunk("conversation/chatLoadOnScroll",async function(payload,{rejectWithValue,getState,dispatch}){
-const {id,chatLoadCounter,chatRetrieved}=payload
-const chatsUrl = (conversationId,loadCounter) =>
-  `http://127.0.0.1:3124/conversation/${conversationId}/chats?limit=13&page=${loadCounter}`;
-try{
-
-  const {
-    data: {
-      data: { messages },
-    },
-  } =await axios.get(chatsUrl(id,chatLoadCounter))
-  console.log(messages)
-  return messages
-}
-catch(err){
-  return rejectWithValue(err)
-}
-
-})
+export const chatLoadMessages=createAsyncThunk("conversations/chatLoadOnScroll",async function(payload,{rejectWithValue,getState,dispatch}){
+  console.log("counter 0")
+  const {id,chatLoadCounter,chatRetrieved}=payload
+  const chatsUrl = (conversationId,loadCounter) =>
+    `http://127.0.0.1:3124/conversation/${conversationId}/chats?limit=13&page=${loadCounter}`;
+  try{
+  
+    const {
+      data: {
+        data: { messages },
+      },
+    } =await axios.get(chatsUrl(id,chatLoadCounter))
+    console.log(messages)
+    return {chatsRetrieved:messages,id}
+  }
+  catch(err){
+    console.log(err)
+    return rejectWithValue({error:err,id})
+  }
+  
+  })
 
 const conversationSlice = createSlice({
   name: "conversations",
@@ -212,6 +214,7 @@ const conversationSlice = createSlice({
         conversations
       }
     }
+    
   },
   extraReducers: (builder) => {
     builder.addCase(restoreConversationsSession.pending, (state) => {
@@ -241,9 +244,35 @@ const conversationSlice = createSlice({
       state.isLoading = false;
       state.isAdding = false;
     });
-    builder.addCase(chatLoadMessages.rejected,(state,action)=>{ console.log("error has been encountered")})
-    builder.addCase(chatLoadMessages.pending,(state,action)=>{console.log("chat is being retrieved right now")})
-    builder.addCase(chatLoadMessages.fulfilled,(state,action)=>{console.log(action.payload)})
+    builder.addCase(chatLoadMessages.rejected,(state,action)=>{ 
+      console.log(action.payload)
+      console.log(action)
+       const conversation=state.conversations.find(convo=>convo.id==action.payload.id);
+       conversation.error=action.payload.error;
+       conversation.chatRetrieved=false;
+       conversation.isAdding=false
+       conversation.isLoading=false
+
+    })
+    builder.addCase(chatLoadMessages.pending,(state)=>{
+      state.isAdding=true;
+      state.isLoading=true;
+
+    })
+    builder.addCase(chatLoadMessages.fulfilled,(state,action)=>{
+      const {chatsRetrieved}=action.payload
+      if(!chatsRetrieved.length)
+        return
+      chatsRetrieved.sort((a, b) => new Date(a.sendAt) - new Date(b.sendAt))
+      const conversation=state.conversations.find(convo=>convo.id==action.payload.id);
+      conversation.isAdding=false;
+      conversation.isLoading=false;
+      conversation.chatRetrieved=true;
+      conversation.chats=[...current(conversation.chats),...chatsRetrieved]
+      conversation.chatsLength=conversation.chatsLength+chatsRetrieved.length
+      conversation.chatLoadCounter=conversation.chatLoadCounter+1;
+
+    })
   },
 });
 

@@ -37,10 +37,8 @@ const ChatApp = () => {
   const conversations = useSelector(state => state.conversations.conversations);
   const dispatch=useDispatch()
   const selectedConversation = conversations.find(convo => convo.id === selectedConversationId);
-  const handleScroll = () => {
+  const handleScroll = async() => {
     if (chatLayout.current && chatLayout.current.scrollTop === 0) {
-      console.log("Reached the top of the chat!");
-      console.log({id:selectedConversation.id,chatLoadCounter:selectedConversation.chatLoadCounter})
       dispatch(chatLoadMessages({id:selectedConversation.id,chatLoadCounter:selectedConversation.chatLoadCounter,chatRetrieved:selectedConversation.chatRetrieved}))
       // Trigger the desired event here, such as loading older messages
       // Example: loadOlderMessages();
