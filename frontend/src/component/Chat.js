@@ -37,18 +37,23 @@ const ChatApp = () => {
   const conversations = useSelector(state => state.conversations.conversations);
   const dispatch=useDispatch()
   const selectedConversation = conversations.find(convo => convo.id === selectedConversationId);
+  const hasBeenScrolled=useRef(false)
   const handleScroll = async() => {
     if (chatLayout.current && chatLayout.current.scrollTop === 0) {
-      dispatch(chatLoadMessages({id:selectedConversation.id,chatLoadCounter:selectedConversation.chatLoadCounter,chatRetrieved:selectedConversation.chatRetrieved}))
       // Trigger the desired event here, such as loading older messages
-      // Example: loadOlderMessages();
+      dispatch(chatLoadMessages({id:selectedConversation.id,chatLoadCounter:selectedConversation.chatLoadCounter,chatRetrieved:selectedConversation.chatRetrieved}))
+      //once the chat is scrolled to the top it will enable the hasBeenScrolled which will later used to now allow the automatic 
+      //scroll to bottom 
+      hasBeenScrolled.current=true
     }
   };
 
   useEffect(() => {
     setSocket({ user });
     if (chatLayout.current) {
+      if(!hasBeenScrolled.current)
       chatLayout.current.scrollTop = chatLayout.current.scrollHeight;
+      hasBeenScrolled.current=false;
     }
 
     socket.on("onlineUsers", (users) => {
