@@ -1,0 +1,45 @@
+@use "../utils/colors.scss";
+.contact_section {
+    flex: auto;
+    align-self: stretch;
+    height: 100%;
+  
+    .conversation {
+      padding: 0px;
+      background-color: transparent;
+      width: 100%;
+      height: 4.5rem;
+      text-align: center;
+      position: relative; // Needed for positioning the ::after
+      transition: all 0.2s ease-in;
+  
+      // General styles to make the conversation visually appealing
+      ;  // Rounded corners
+      margin: 0px 0;  // Space between each conversation box
+  
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0px;  // Places it above the bottom padding
+        left: 50%;  // Start at the horizontal center
+        transform: translateX(-50%);  // Adjust to center it perfectly
+        height: 0.8px;  // Thickness of the line
+        width: 80%;  // Width of the bottom border
+        background-color: rgb(215, 207, 207);  // Border color
+        display: block;
+      }
+      &:hover{
+        background-color: rgb(237, 229, 229);
+
+    }
+    .time-span {
+        position: absolute;
+        top: 8px;  // Adjust to the desired position
+        right: 16px;  // Position it at the top right corner
+        font-size: 0.75rem;  // Small font size for the time
+        color: rgb(150, 150, 150);  // Subtle color for the time
+      }
+
+    
+  }
+}

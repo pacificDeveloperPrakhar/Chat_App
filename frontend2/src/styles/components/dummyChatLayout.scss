@@ -1,0 +1,79 @@
+.container {
+    display: flex;
+    position: absolute;
+    inset: 2% ;
+    border-color: black;
+  }
+  
+  /* Sidebar (Left Panel) */
+  .sidebar {
+    flex: 0 0 30%; /* Occupies 30% of the width */
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ddd;
+  }
+  
+  .sidebar-header {
+    flex: 0 0 10%; /* Header takes 10% of the height */
+    padding: 10px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .chat-list {
+    flex: 1; /* Takes up the remaining height (85%) */
+    overflow-y: auto; /* Scrollable chat list */
+    padding: 10px;
+  }
+  
+  .sidebar-footer {
+    flex: 0 0 5%; /* Footer takes 5% of the height */
+    padding: 10px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Chat Area (Right Panel) */
+  .chat-area {
+    flex: 0 0 70%; /* Occupies 70% of the width */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chat-header {
+    flex: 0 0 10%; /* Header takes 10% of the height */
+    padding: 10px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .message-history {
+    flex: 1; /* Takes up 85% of the height */
+    padding: 10px;
+    overflow-y: auto; /* Scrollable message history */
+  }
+  
+  .chat-footer {
+    flex: 0 0 5%; /* Footer takes 5% of the height */
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+  }
+  

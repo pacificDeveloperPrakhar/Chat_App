@@ -1,0 +1,211 @@
+@font-face {
+  font-family: "interim";
+  src: url("../assets/fonts/Inter-variable.ttf");
+}
+@font-face {
+  font-family: "grapenut";
+  src: url("../assets/fonts/PlaywriteCU-Regular.ttf");
+}
+#AppLayout {
+  position: absolute;
+  inset: 3% 2%;
+  background-color: rgba(240, 248, 255, 0.2);
+  backdrop-filter: blur(3px);
+}
+
+.container {
+  display: flex;
+  position: absolute;
+  inset: 2%;
+  border-color: black;
+}
+
+/* Sidebar (Left Panel) */
+.sidebar {
+  flex: 0 0 30%; /* Occupies 30% of the width */
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #ddd;
+}
+
+.sidebar-header {
+  flex: 0 0 10%; /* Header takes 10% of the height */
+  padding: 10px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-list {
+  flex: 1; /* Takes up the remaining height (85%) */
+  overflow-y: auto; /* Scrollable chat list */
+  padding: 10px;
+}
+
+.sidebar-footer {
+  flex: 0 0 5%; /* Footer takes 5% of the height */
+  padding: 10px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Chat Area (Right Panel) */
+.chat-area {
+  flex: 0 0 70%; /* Occupies 70% of the width */
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  flex: 0 0 10%; /* Header takes 10% of the height */
+  padding: 10px;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.message-history {
+  flex: 1; /* Takes up 85% of the height */
+  padding: 10px;
+  overflow-y: auto; /* Scrollable message history */
+}
+
+.chat-footer {
+  flex: 0 0 5%; /* Footer takes 5% of the height */
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
+
+.ChatLayout {
+  display: flex;
+  background-color: transparent;
+  height: 100%;
+}
+.ChatLayout .header {
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem;
+  height: inherit;
+  flex-grow: 0;
+}
+.ChatLayout .chatContainer {
+  flex-grow: 1;
+  background-color: #f0f0f0;
+}
+
+.header_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: transparent;
+  color: white;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+  border: 0;
+}
+.header_button:hover {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: rgba(237, 231, 231, 0.353);
+  color: white;
+}
+.header_button:focus {
+  border: none;
+  border-color: transparent;
+  background-color: rgba(245, 238, 238, 0.453);
+}
+.header_button svg {
+  font-size: 1.9rem;
+  border: none;
+}
+.header_button svg:focus {
+  border: 0;
+}
+
+.contact_section {
+  flex: auto;
+  align-self: stretch;
+  height: 100%;
+}
+.contact_section .conversation {
+  padding: 0px;
+  background-color: transparent;
+  width: 100%;
+  height: 4.5rem;
+  text-align: center;
+  position: relative;
+  transition: all 0.2s ease-in;
+  margin: 0px 0;
+}
+.contact_section .conversation::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 0.8px;
+  width: 80%;
+  background-color: rgb(215, 207, 207);
+  display: block;
+}
+.contact_section .conversation:hover {
+  background-color: rgb(237, 229, 229);
+}
+.contact_section .conversation .time-span {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  font-size: 0.75rem;
+  color: rgb(150, 150, 150);
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  background: linear-gradient(to right, #5b2474, #1bcedf);
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/*# sourceMappingURL=App.css.map */
