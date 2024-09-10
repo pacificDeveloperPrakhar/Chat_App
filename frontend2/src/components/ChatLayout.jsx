@@ -7,9 +7,9 @@ import Contact_Section from './Contact_Section';
 export default function ChatLayout() {
   return (
     <div className='ChatLayout flex h-full'>
-      <div className="header  flex flex-col" style={{
-        height: "inherit", // Full height of parent container
-        flexGrow: 0, // Make sure header doesn't grow
+      <div className="header  flex flex-col " style={{
+        height: "inherit", 
+        flexGrow: 0, 
         padding:"0.5rem"
       }}>
          <div className="section_header flex flex-col flex-auto justify-start gap-3">
@@ -25,13 +25,12 @@ export default function ChatLayout() {
           <IoIosSettings className='text-4xl' />
         </button>
         
-          <Avatar/>
+          <Avatar online={false}/>
          </div>
 
       </div>
       <Contact_Section/>
-      <div className="chatContainer " style={{ backgroundColor: '#f0f0f0',flexGrow:2.4 }}>
-        {/* Chat content goes here */}
+      <div className="chatContainer " style={{ backgroundColor: '#f0f0f0',flexGrow:6 }}>
       </div>
     </div>
   );

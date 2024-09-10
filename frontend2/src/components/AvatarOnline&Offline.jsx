@@ -32,14 +32,17 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-export default function OnlineBadgeAvatar() {
-  return (
-    <StyledBadge
+export default function OnlineBadgeAvatar({online=false}) {
+  return (<>
+  {
+      online?<StyledBadge
       overlap="circular"
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       variant="dot"
-    >
+      >
       <Avatar alt="Online User" src="/static/images/avatar/1.jpg" />
-    </StyledBadge>
+      </StyledBadge>:<Avatar alt="Online User" src="/static/images/avatar/1.jpg" />
+    }
+    </>
   );
 }
