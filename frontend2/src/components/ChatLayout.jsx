@@ -4,6 +4,7 @@ import { IoIosSettings } from 'react-icons/io';
 import { IoIosChatboxes } from "react-icons/io";
 import Avatar from"./AvatarOnline&Offline"
 import Contact_Section from './Contact_Section';
+import ChatContainer from './ChatContainer';
 export default function ChatLayout() {
   return (
     <div className='ChatLayout flex h-full'>
@@ -30,7 +31,8 @@ export default function ChatLayout() {
 
       </div>
       <Contact_Section/>
-      <div className="chatContainer " style={{ backgroundColor: '#f0f0f0',flexGrow:6 }}>
+      <div className="chatContainer relative" style={{ flexGrow:6 }}>
+      <ChatContainer/>
       </div>
     </div>
   );

@@ -1,0 +1,34 @@
+@use "../utils/colors.scss";
+
+.chat {
+    font-size: 1rem;
+
+    .chat_icons {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.7rem;
+        height: 1.7rem;
+        font-size: 2rem;
+        border-radius: 50%;
+        transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .chat_icons:hover {
+        background-color: rgba(0,0,0,0.008);
+        transform: scale(1.2);
+    }
+    .chat_text_input{
+        color: purple;
+        background-color: rgba(colors.$primary-base, 0.15);
+    }
+    input {
+        font-size: 0.9rem;
+        background-color: rgba(colors.$primary-base, 0.15);
+    }
+
+    header {
+        background-color: rgba(colors.$primary-base, 0.95);
+        color: white;
+    }
+}

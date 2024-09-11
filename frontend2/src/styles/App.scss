@@ -5,6 +5,7 @@
 @use "./components/ChatLayout.scss";
 @use "./components/Contact_section.scss";
 @use "./components/ChatTab.scss";
+@use "./components/ChatContainer.scss";
 #root {
   max-width: 1280px;
   margin: 0 auto;
