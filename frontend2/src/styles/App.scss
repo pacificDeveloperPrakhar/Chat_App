@@ -1,3 +1,4 @@
+@use "./utils/fonts.scss";
 @use "./utils/typography.scss";
 @use "./utils//colors.scss";
 @use "./AppLayout.scss";
@@ -6,7 +7,7 @@
 @use "./components/Contact_section.scss";
 @use "./components/ChatTab.scss";
 @use "./components/ChatContainer.scss";
-@use "./utils/fonts.scss";
+@use "./components/Form.scss";
 #root {
   max-width: 1280px;
   margin: 0 auto;

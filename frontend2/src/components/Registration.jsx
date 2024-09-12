@@ -11,10 +11,16 @@ export default function Registration() {
       <div className='  flex justify-stretch' style={{
         flexGrow:6
     }}>
-        <div className="section_registration section_1 flex-1">
-
+        <div className="section_registration section_1 flex-1"
+         style={{
+          flexGrow:2.4
+        }}
+        >
+         Chat App
         </div>
-        <div className="section_registration section_2 flex-1 ">
+        <div className="section_registration section_2  " style={{
+          flexGrow:1.2
+        }}>
           <Form/>
         </div>
     </div>

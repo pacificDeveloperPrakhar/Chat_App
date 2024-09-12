@@ -4,6 +4,22 @@
 }
 @font-face {
   font-family: "grapenut";
+  src: url("../assets/fonts/playwright-variable.ttf");
+}
+@font-face {
+  font-family: "suse";
+  src: url("../assets/fonts/SUSE-Regular.ttf");
+}
+@font-face {
+  font-family: "nanum";
+  src: url("../assets//fonts/nanum.ttf");
+}
+@font-face {
+  font-family: "interim";
+  src: url("../assets/fonts/Inter-variable.ttf");
+}
+@font-face {
+  font-family: "grapenut";
   src: url("../assets/fonts/PlaywriteCU-Regular.ttf");
 }
 #AppLayout {
@@ -398,14 +414,104 @@ input {
   color: white;
 }
 
-@font-face {
+.section_registration {
+  background-color: transparent;
+}
+
+.section_2 {
   font-family: "interim";
-  src: url("../assets/fonts/Inter-variable.ttf");
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-@font-face {
-  font-family: "grapenut";
-  src: url("../assets/fonts/PlaywriteCU-Regular.ttf");
+
+.section_1 {
+  font-family: "interim";
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  font-size: 4.5rem;
+  font-weight: 700;
 }
+
+.login-form {
+  background-color: transparent;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+}
+.login-form .form-heading {
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  font-family: "interim";
+  color: #6b21a8;
+  margin-bottom: 3.4rem;
+}
+.login-form .input-group {
+  display: flex;
+  align-items: center;
+  background-color: #f3f4f6;
+  border: 1px solid #d8b4fe;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.login-form .input-group:focus-within {
+  background-color: #e8eaf6;
+  border-color: #9333ea;
+}
+.login-form .input-group .icon {
+  color: #9333ea;
+  margin-right: 12px;
+}
+.login-form .input-group .input-field {
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: #6b21a8;
+  font-size: 16px;
+}
+.login-form .input-group .input-field:focus {
+  color: #3b82f6;
+}
+.login-form .input-group .toggle-password {
+  cursor: pointer;
+  margin-left: 8px;
+  color: #6b21a8;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.login-form .input-group .input-field:focus + .toggle-password {
+  opacity: 1;
+}
+.login-form .submit-btn {
+  width: 100%;
+  background: linear-gradient(to right, #9333ea, #3b82f6);
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.login-form .submit-btn:hover {
+  opacity: 0.9;
+}
+.login-form .submit-btn:active {
+  transform: scale(0.98);
+  background: linear-gradient(to right, #6b21a8, #2563eb);
+}
+
+.icon {
+  font-size: 2rem;
+}
+.icon:active {
+  color: #6b21a8;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
