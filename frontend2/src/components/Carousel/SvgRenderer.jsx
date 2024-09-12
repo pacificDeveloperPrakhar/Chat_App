@@ -1,14 +1,14 @@
 // src/components/SvgDisplay.jsx
 
-import React from 'react';
-import Logo from '../../assets/images/node.svg'; // Import the SVG
+import React,{forwardRef} from 'react'; // Import the SVG
 
-const SvgDisplay = () => {
+const SvgDisplay = forwardRef(({Img,size},ref) => {
   return (
-    <div className="flex justify-center items-center w-full max-w-xs aspect-square">
-      <img src={Logo} alt="" />
+    <div className="flex justify-center items-center  aspect-square"
+    style={{width:"", height:`${2*size}rem` }} ref={ref}>
+      <img src={Img} alt="" />
     </div>
   );
-};
+});
 
 export default SvgDisplay;
