@@ -142,3 +142,25 @@
     color: white;
   }
 }
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: white;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #ddd;
+}
+
+.separator::before {
+  margin-right: 10px;
+}
+
+.separator::after {
+  margin-left: 10px;
+}

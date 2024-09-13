@@ -4,7 +4,8 @@ import { TfiEmail } from "react-icons/tfi";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { TbPasswordUser } from "react-icons/tb";
 import {AnimatePresence,motion} from "framer-motion"
-
+import github from "../assets/logos/github.svg"
+import google from "../assets/logos/google.svg"
 export default function () {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -97,6 +98,20 @@ export default function () {
         <button type="submit" className="submit-btn">
           {isLogin?"Login":"Sign in"}
         </button>
+
+        <div class="separator">
+  <span>or proceed using</span>
+</div>
+<div className="flex justify-evenly bg-transparent p-4 ">
+  <span className="flex items-center justify-center w-16 h-16 bg-white rounded-full transition-transform duration-100 hover:bg-gray-200 hover:scale-110">
+    <img src={github} alt="GitHub logo" className="w-8 h-8" />
+  </span>
+  <span className="flex items-center justify-center w-16 h-16 bg-white rounded-full transition-transform duration-100 hover:bg-gray-200 hover:scale-110">
+    <img src={google} alt="Google logo" className="w-8 h-8" />
+  </span>
+</div>
+
+
       </motion.form>
     </>
   );
