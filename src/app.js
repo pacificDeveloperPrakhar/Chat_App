@@ -11,6 +11,10 @@ const device=require("express-device")
 // Initialize Express app
 
 // Enable CORS for all origins and HTTP methods
+app.use((req,res,next)=>{
+    console.log("request has been encountered")
+    next()
+})
 app.use(device.capture())
 app.use(cors({
     origin: '*',  // Allow all origins
@@ -42,5 +46,11 @@ app.use(express.json());
 // Route handling for profile-related actions
 app.use("/profiles", profileRoutes);
 app.use("/conversation", conversationRoute);
+// error handling route
+app.use((err,req,res,next)=>{
+    const error=({stack:err.stack,message:err.message,name:err.name,...err})
+    res.status(err['status code']).json({...error})
+    
+})
 // Export the app module
 module.exports = server;

@@ -46,8 +46,8 @@ console.log(images.length)
     >
         {[...images, ...images].map((image, index,arr) => {
             return Math.floor(arr.length/2)==index?
-                <SvgDisplay Img={image} size={4.4} ref={midCarouselRef}/>
-                :<SvgDisplay Img={image} size={4.4}/>
+                <SvgDisplay Img={image} size={3} ref={midCarouselRef} key={index}/>
+                :<SvgDisplay Img={image} size={3} key={index}/>
         })}
       </motion.div>
   )

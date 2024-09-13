@@ -6,6 +6,8 @@ import Registration from './components/Registration'
 import ChatLayout from './components/ChatLayout'
 import ErrorElement from './components/errorElement'
 import DummyChatLayout from  "./components/DummyChatLayout"
+import {Provider} from "react-redux"
+import store from './store/store.jsx'
 
 // setting up the routes
 const routes=createBrowserRouter([
@@ -31,7 +33,9 @@ function App() {
 
   return (
     <>
+    <Provider store={store}>
     <RouterProvider router={routes}/>
+    </Provider>
     </>
   )
 }

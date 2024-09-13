@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaRegUserCircle } from "react-icons/fa";
 import { TfiEmail } from "react-icons/tfi";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
@@ -6,13 +6,28 @@ import { TbPasswordUser } from "react-icons/tb";
 import {AnimatePresence,motion} from "framer-motion"
 import github from "../assets/logos/github.svg"
 import google from "../assets/logos/google.svg"
+import {useDispatch} from "react-redux";
+import {loginUserAction,addUserAction} from "../slices/userSlice";
 export default function () {
+  const dispatch=useDispatch()
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-
+  const [user,setUser]=useState({})
+//  a function to handle the input when submitted from the form
+function input(e){
+   setUser({...user,[e.target.name]:e.target.value})
+}
+useEffect(()=>{})
   return (
     <>
-      <motion.form className="login-form" initial={{opacity:0,x:-200}} animate={{opacity:1,x:0}} transition={{duration:0.8}}>
+      <motion.form className="login-form" initial={{opacity:0,x:-200}} animate={{opacity:1,x:0}} transition={{duration:0.8}}
+      onSubmit={(e)=>{
+        e.preventDefault();
+        if(!isLogin)
+        dispatch(addUserAction({...user}))
+        else
+        dispatch(loginUserAction({...user}))
+      }}>
         <h1 className="form-heading">{isLogin?"Login":"Sign in"} </h1>
         <div className="tabs ">
           <div className='tabs_tab ' onClick={()=>setIsLogin(false)}>
@@ -32,6 +47,7 @@ export default function () {
         <div className="input-group">
           <FaRegUserCircle className="icon" />
           <input
+            onChange={input}
             className="input-field"
             type="text"
             name="username"
@@ -43,6 +59,7 @@ export default function () {
         {!isLogin&&<div className="input-group">
           <TfiEmail className="icon" />
           <input
+            onChange={input}
             className="input-field"
             type="email"
             name="email"
@@ -54,6 +71,7 @@ export default function () {
         <div className="input-group">
           <TbPasswordUser className="icon" />
           <input
+            onChange={input}
             className="input-field"
             type={showPassword ? "text" : "password"}
             name="password"
@@ -76,9 +94,10 @@ export default function () {
         {!isLogin&&<div className="input-group">
           <TbPasswordUser className="icon" />
           <input
+            onChange={input}
             className="input-field"
             type={showPassword ? "text" : "password"}
-            name="confirm_password"
+            name="confirmPassword"
             id="confirm_password"
             placeholder="Confirm Password"
           />
