@@ -7,14 +7,6 @@
   src: url("../assets/fonts/playwright-variable.ttf");
 }
 @font-face {
-  font-family: "suse";
-  src: url("../assets/fonts/SUSE-Regular.ttf");
-}
-@font-face {
-  font-family: "nanum";
-  src: url("../assets//fonts/nanum.ttf");
-}
-@font-face {
   font-family: "interim";
   src: url("../assets/fonts/Inter-variable.ttf");
 }
@@ -464,7 +456,8 @@ input {
 }
 .login-form .input-group .icon {
   color: #9333ea;
-  margin-right: 12px;
+  margin-right: 0.9rem;
+  font-size: 1.1rem;
 }
 .login-form .input-group .input-field {
   width: 100%;
@@ -488,7 +481,7 @@ input {
   opacity: 1;
 }
 .login-form .submit-btn {
-  width: 100%;
+  width: 60%;
   background: linear-gradient(to right, #9333ea, #3b82f6);
   color: #fff;
   padding: 12px;
@@ -510,6 +503,39 @@ input {
 }
 .icon:active {
   color: #6b21a8;
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 2rem;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.tabs .tabs_tab {
+  position: relative;
+  flex-grow: 1;
+  cursor: pointer;
+  padding-block: 0.4rem;
+  transition: all 0.2s ease;
+}
+.tabs .tabs_tab:hover {
+  background-color: hsla(273, 67%, 39%, 0.447);
+  box-shadow: 0 4px 8px hsla(273, 67%, 39%, 0.447);
+}
+.tabs .selected_bg {
+  background-color: #6b21a8;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.tabs .text {
+  z-index: 10;
+  display: block;
+  inset: 0;
+  position: relative;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: white;
 }
 
 #root {

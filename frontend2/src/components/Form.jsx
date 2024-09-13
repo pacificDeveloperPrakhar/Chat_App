@@ -3,7 +3,7 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { TfiEmail } from "react-icons/tfi";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { TbPasswordUser } from "react-icons/tb";
-
+import {AnimatePresence,motion} from "framer-motion"
 
 export default function () {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,9 +11,23 @@ export default function () {
 
   return (
     <>
-      <form className="login-form">
-        <h1 className="form-heading">Login </h1>
-        
+      <motion.form className="login-form" initial={{opacity:0,x:-200}} animate={{opacity:1,x:0}} transition={{duration:0.8}}>
+        <h1 className="form-heading">{isLogin?"Login":"Sign in"} </h1>
+        <div className="tabs ">
+          <div className='tabs_tab ' onClick={()=>setIsLogin(false)}>
+
+            {!isLogin&&<motion.div className="selected_bg " layoutId="select"
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            />}
+            <span className='text'>Sign In</span>
+          </div>
+          <div className='tabs_tab' onClick={()=>setIsLogin(true)}>
+          {isLogin&&<motion.div layoutId="select" className="selected_bg "
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            />}
+            <span className='text'>Log In</span>
+          </div>
+        </div>
         <div className="input-group">
           <FaRegUserCircle className="icon" />
           <input
@@ -25,7 +39,7 @@ export default function () {
           />
         </div>
         
-        <div className="input-group">
+        {!isLogin&&<div className="input-group">
           <TfiEmail className="icon" />
           <input
             className="input-field"
@@ -34,7 +48,7 @@ export default function () {
             id="email"
             placeholder="Email"
           />
-        </div>
+        </div>}
 
         <div className="input-group">
           <TbPasswordUser className="icon" />
@@ -58,7 +72,7 @@ export default function () {
           )}
         </div>
 
-        <div className="input-group">
+        {!isLogin&&<div className="input-group">
           <TbPasswordUser className="icon" />
           <input
             className="input-field"
@@ -79,11 +93,11 @@ export default function () {
             />
           )}
         </div>
-
+}
         <button type="submit" className="submit-btn">
-          Login
+          {isLogin?"Login":"Sign in"}
         </button>
-      </form>
+      </motion.form>
     </>
   );
 }
