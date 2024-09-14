@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch,useSelector } from 'react-redux';
 import {openNewToast} from "../slices/toastSlice"
+
 function RegistrationError(){
     const dispatch=useDispatch()
     const error=useSelector(state=>state.user.error)
@@ -18,7 +19,7 @@ function RegistrationSuccess(){
   const user=useSelector(state=>state.user.user)
   console.log(user)
   useEffect(()=>{
-  dispatch(openNewToast({mssg:"this is to see if the user is being loggin in or not",type:"success"}))
+  dispatch(openNewToast({mssg:user,type:"success"}))
   },[user]
 )
 return <>

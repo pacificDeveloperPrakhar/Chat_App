@@ -41,13 +41,13 @@ function Snackbar_item({ mssg, type, theme, Key }) {
   return (
     <motion.div
       className="snackbar"
-      style={{ backgroundColor: theme }}
+      style={{ backgroundColor: 'rgba(22, 96, 224, 0.5)' }}
       initial={{  x: -500 }}
       animate={{  x: 0 }}
       exit={{  x: -500 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="icon_contain" style={{ backgroundColor: theme }}>
+      <div className="icon_contain px-2 py-2" style={{ backgroundColor:theme ,alignSelf:"stretch" }}>
         <span className="snackbar_icon">{icon}</span>
       </div>
       <span className="snackbar_label">{mssg}</span>

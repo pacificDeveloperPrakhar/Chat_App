@@ -28,7 +28,11 @@
             }
         }
         .snackbar_icon{
-          
+           width: 100%;
+           display: block;
+        }
+        .icon_contain{
+            align-items: center;
         }
         
     }

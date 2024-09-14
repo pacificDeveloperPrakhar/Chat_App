@@ -590,6 +590,14 @@ input {
 .snackbar_container .snackbar .snackbar_dismiss:hover {
   color: rgba(255, 0, 0, 0.3);
 }
+.snackbar_container .snackbar .snackbar_icon {
+  width: 100%;
+  display: block;
+}
+.snackbar_container .snackbar .icon_contain {
+  align-items: center;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
