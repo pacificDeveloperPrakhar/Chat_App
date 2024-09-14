@@ -1,0 +1,35 @@
+@use "../utils/colors.scss";
+.snackbar_container{
+    position: absolute;
+    bottom: 4vh;
+    left:3vw;
+    min-width: 16vw;
+    color: white;
+    display: flex;
+    flex-direction: column-reverse;
+    
+    .snackbar{
+        background-color: rgba(colors.$secondary-base,0.3);
+        gap:0.9rem;
+        margin-block: 0.6rem;
+        padding-block: 0.2rem;
+        border-bottom-width: 0.1rem ;
+        font-weight: 200;
+        border-color: colors.$primary-base;
+        display: flex;
+        flex-direction: row;
+        padding-inline:0.2rem;
+        align-items: center;
+        justify-content: space-between;
+        .snackbar_dismiss{
+            color: white;
+            &:hover{
+                color: rgba(red,0.3);
+            }
+        }
+        .snackbar_icon{
+          
+        }
+        
+    }
+}

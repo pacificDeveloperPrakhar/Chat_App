@@ -115,7 +115,7 @@ export const addUserAction = createAsyncThunk(
           state.user = action.payload.data.profile;
         })
         .addCase(loginUserAction.rejected, (state, action) => {
-          console.log(action)
+          console.log(action.payload)
           state.isLoading = false;
           state.isAdding = false;
           state.error = action.payload;

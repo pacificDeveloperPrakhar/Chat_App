@@ -561,6 +561,35 @@ input {
   margin-left: 10px;
 }
 
+.snackbar_container {
+  position: absolute;
+  bottom: 4vh;
+  left: 3vw;
+  min-width: 16vw;
+  color: white;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.snackbar_container .snackbar {
+  background-color: rgba(27, 206, 223, 0.3);
+  gap: 0.9rem;
+  margin-block: 0.6rem;
+  padding-block: 0.2rem;
+  border-bottom-width: 0.1rem;
+  font-weight: 200;
+  border-color: #5b2474;
+  display: flex;
+  flex-direction: row;
+  padding-inline: 0.2rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.snackbar_container .snackbar .snackbar_dismiss {
+  color: white;
+}
+.snackbar_container .snackbar .snackbar_dismiss:hover {
+  color: rgba(255, 0, 0, 0.3);
+}
 #root {
   max-width: 1280px;
   margin: 0 auto;

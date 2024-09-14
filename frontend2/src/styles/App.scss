@@ -8,6 +8,7 @@
 @use "./components/ChatTab.scss";
 @use "./components/ChatContainer.scss";
 @use "./components/Form.scss";
+@use "./components/snackbar.scss";
 #root {
   max-width: 1280px;
   margin: 0 auto;
