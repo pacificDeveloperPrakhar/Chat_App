@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch,useSelector } from 'react-redux';
 import {openNewToast} from "../slices/toastSlice"
+import checkUserVerificability from './checkUserVerificability';
 
 function RegistrationError(){
     const dispatch=useDispatch()
@@ -19,7 +20,8 @@ function RegistrationSuccess(){
   const user=useSelector(state=>state.user.user)
   console.log(user)
   useEffect(()=>{
-  dispatch(openNewToast({mssg:user,type:"success"}))
+  const info=checkUserVerificability(user)
+  dispatch(openNewToast(info))
   },[user]
 )
 return <>
