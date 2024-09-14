@@ -47,7 +47,7 @@ useEffect(()=>{})
             <span className='text'>Log In</span>
           </div>
         </div>
-        <div className="input-group">
+        {!isLogin&&<div className="input-group">
           <FaRegUserCircle className="icon" />
           <input
             onChange={input}
@@ -58,8 +58,8 @@ useEffect(()=>{})
             placeholder="Username"
           />
         </div>
-        
-        {!isLogin&&<div className="input-group">
+}
+        {<div className="input-group">
           <TfiEmail className="icon" />
           <input
             onChange={input}

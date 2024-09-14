@@ -4,7 +4,7 @@ import axios from "axios"
 // from the local storage and then it will store that into the redux store
 const userState={
     users:[],
-    user:localStorage.getItem("user")?JSON.parse(localStorage.get("user")):{},
+    user:localStorage.getItem("user")?JSON.parse(localStorage.getItem("user")):{},
     error:null,
     isLoading:false,
     isAdding:false,
@@ -49,15 +49,20 @@ export const addUserAction = createAsyncThunk(
                "Content-Type": "application/json",
              },
            };
-        const { data } = await axios.post(
+        const response = await axios.post(
           "http://127.0.0.1:3124/profiles/login",
           payload,config
         );
+        console.log(response)
+        const {data}=response
         console.log(data)
         return data;
       } catch (err) {
-        console.log(JSON.parse(JSON.stringify(err)));
+        console.log(err.response);
+        if(!err.response)
         return (rejectWithValue( JSON.parse(JSON.stringify(err)),"error was seen"));
+        return (rejectWithValue( JSON.parse(JSON.stringify(err.response.data)),"error was seen"));
+
       }
     }
   );

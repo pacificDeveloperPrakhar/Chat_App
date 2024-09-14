@@ -5,7 +5,7 @@ import { IoMdClose } from "react-icons/io";
 import { FaExclamation } from "react-icons/fa";
 import { MdQuestionMark, MdDone, MdErrorOutline } from "react-icons/md";
 import { closeToast } from "../slices/toastSlice";
-
+import { BsSendCheck } from "react-icons/bs";
 function Snackbar_item({ mssg, type, theme, Key }) {
   let icon;
   const dispatch = useDispatch();
@@ -14,7 +14,7 @@ function Snackbar_item({ mssg, type, theme, Key }) {
     case "info":
       icon = <FaExclamation />;
       break;
-    case "question":
+    case "quest":
       icon = <MdQuestionMark />;
       break;
     case "success":
@@ -23,6 +23,8 @@ function Snackbar_item({ mssg, type, theme, Key }) {
     case "error":
       icon = <MdErrorOutline />;
       break;
+    case 'send':
+      icon=<BsSendCheck />
     default:
       icon = null;
   }
@@ -30,7 +32,7 @@ function Snackbar_item({ mssg, type, theme, Key }) {
   useEffect(() => {
     let timer = setTimeout(() => {
       dispatch(closeToast({ key: Key }));
-    }, 2000);
+    }, 4000);
     return () => {
       clearTimeout(timer);
     };
