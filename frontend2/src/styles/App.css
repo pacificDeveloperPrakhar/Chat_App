@@ -104,6 +104,8 @@ input {
   display: flex;
   background-color: transparent;
   height: 100%;
+  position: absolute;
+  inset: 0;
 }
 .ChatLayout .header {
   background-color: transparent;
@@ -598,6 +600,26 @@ input {
   align-items: center;
 }
 
+.profile_picture_view {
+  padding: 0.9rem;
+  border-color: rgba(91, 36, 116, 0.1);
+  border-width: 1rem;
+}
+
+.upload {
+  background-color: rgba(91, 36, 116, 0.5);
+  position: absolute;
+  border-radius: 100%;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  right: -1rem;
+  bottom: 0rem;
+  color: white;
+}
+.upload:hover {
+  background-color: rgba(91, 36, 116, 0.7);
+  box-shadow: 0 4px 8px rgba(27, 206, 223, 0.4);
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -625,6 +647,15 @@ body {
 
 .read-the-docs {
   color: #888;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.nav-link:hover {
+  color: white;
 }
 
 /*# sourceMappingURL=App.css.map */

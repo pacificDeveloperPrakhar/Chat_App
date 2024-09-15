@@ -24,7 +24,7 @@ function Registration_phase(){
     case "not verified":
         return <Navigate to="/form/" replace  state={userVerified}/>
     case "verified":
-        return <Navigate to="/chat_screen_layout/" replace state={userVerified}/>
+        return <Navigate to="/chat_screen_layout/" state={userVerified}/>
     default :
         return <Navigate to="/form/" replace  state={userVerified}/>
   }

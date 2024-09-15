@@ -1,10 +1,8 @@
 import React from 'react';
-import { BsChatLeftDots } from 'react-icons/bs';
+import { Outlet,Link } from 'react-router-dom';
 import { IoIosSettings } from 'react-icons/io';
 import { IoIosChatboxes } from "react-icons/io";
 import Avatar from"./AvatarOnline&Offline"
-import Contact_Section from './Contact_Section';
-import ChatContainer from './ChatContainer';
 import SocketManager from '../utils/SocketManager';
 export default function ChatLayout() {
   return (
@@ -18,24 +16,28 @@ export default function ChatLayout() {
          <div className="section_header flex flex-col flex-auto justify-start gap-3">
          <button className='header_button' style={{
         }}>
+          <Link to="" className='nav-link'>
           <IoIosChatboxes className='text-4xl'  />
+          </Link>
         </button>
          </div>
          <div className="section_header flex flex-col flex-auto justify-end gap-4">
          <button className='header_button' style={{
           height: "2.6rem", width: "2.6rem", padding: "0.5rem" 
         }}>
+          <Link to="setting" className='nav-link'>
           <IoIosSettings className='text-4xl' />
+          </Link>
         </button>
-        
+        <Link to="me" className='nav-link'>
           <Avatar online={false}/>
+        </Link>
          </div>
 
       </div>
-      <Contact_Section/>
-      <div className="chatContainer relative" style={{ flexGrow:6 }}>
-      <ChatContainer/>
-      </div>
+      
+
+    <Outlet/>
     </div>
     <SocketManager/>
 </>

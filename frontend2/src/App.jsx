@@ -5,9 +5,11 @@ import AppLayout from './AppLayout'
 import Registration from './components/Registration'
 import ChatLayout from './components/ChatLayout'
 import ErrorElement from './components/errorElement'
-import DummyChatLayout from  "./components/DummyChatLayout"
+import Me from './components/Me.jsx';
+import Setting from './components/Setting.jsx'
 import {Provider} from "react-redux"
 import store from './store/store.jsx'
+import ChatSection from './components/ChatSection.jsx'
 
 // setting up the routes
 const routes=createBrowserRouter([
@@ -21,7 +23,21 @@ const routes=createBrowserRouter([
       },
       {
         path:"/chat_screen_layout",
-        element:<ChatLayout/>
+        element:<ChatLayout/>,
+        children:[
+          {
+            path:"",
+            element:<ChatSection/>
+          },
+          {
+            path:"me",
+            element:<Me/>
+          },
+          {
+            path:"setting",
+            element:<Setting/>
+          }
+        ]
       },
     ],
     errorElement:<ErrorElement/>

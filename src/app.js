@@ -7,7 +7,8 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app); 
 const conversationRoute=require("./routes/conversationRoute.js")
-const device=require("express-device")
+const device=require("express-device");
+const { message } = require("./db/schema/schema.js");
 // Initialize Express app
 
 // Enable CORS for all origins and HTTP methods
@@ -46,6 +47,17 @@ app.use(express.json());
 // Route handling for profile-related actions
 app.use("/profiles", profileRoutes);
 app.use("/conversation", conversationRoute);
+//for if client encounters the 404 error
+app.use((req,res,next)=>{
+    res.status(404).json({
+        "status code":404,
+        status:"not found",
+        data:{},
+        message:"route requested is not specified on the server side",
+        fromDeveloper:"this program was made entirely by the author:prakhar vishwakarma,if u like this app make sure to appreciate the work"
+
+    })
+})
 // error handling route
 app.use((err,req,res,next)=>{
     const error=({stack:err.stack,message:err.message,name:err.name,...err})
