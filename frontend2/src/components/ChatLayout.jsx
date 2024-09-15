@@ -5,8 +5,10 @@ import { IoIosChatboxes } from "react-icons/io";
 import Avatar from"./AvatarOnline&Offline"
 import Contact_Section from './Contact_Section';
 import ChatContainer from './ChatContainer';
+import SocketManager from '../utils/SocketManager';
 export default function ChatLayout() {
   return (
+    <>
     <div className='ChatLayout flex h-full'>
       <div className="header  flex flex-col " style={{
         height: "inherit", 
@@ -35,5 +37,7 @@ export default function ChatLayout() {
       <ChatContainer/>
       </div>
     </div>
+    <SocketManager/>
+</>
   );
 }

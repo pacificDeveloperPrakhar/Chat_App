@@ -37,7 +37,10 @@ const sessionMiddleware = session({
 
 // Attach session middleware to engine
 io.engine.use(sessionMiddleware)
-
+io.engine.use((req,res,next)=>{
+    console.log("handshake has been initiated")
+    next()
+})
 // Global middleware for all namespaces
 io.use(extractUser)
 
