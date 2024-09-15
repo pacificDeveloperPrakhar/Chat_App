@@ -4,4 +4,3 @@ config.env
 /frontend2/node_modules
 /frontend/dist
 /frontend/.parcel-cache
-/public

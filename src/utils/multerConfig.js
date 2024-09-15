@@ -9,6 +9,7 @@ const storage=multer.diskStorage({
   },
   filename:function(req,file,cb){
     const userId=req?.session?.userId;
+    req.userId=userId
     const uniqueFactor=Math.round(Math.random()*1e9)
     const time=Date.now();
     const validExtensions=["svg","jpeg","jpg","xml","png"]
@@ -40,8 +41,32 @@ cloudinary.config({
   api_secret: process.env.cloudinary_api_secret,
 })
 
-const storeToCloudinary=catchAsync(async (req,res,next)=>{
-
+const storeProfileImagesToCloudinary=catchAsync(async(req,res,next)=>{
+  console.log("1")
+const uploadToCloudinary=function(filePath){
+  return new Promise((resolve,reject)=>{
+      cloudinary.uploader.upload(filePath,{folder:"profiles"},(err,res)=>{
+        if(err)
+        reject(err)
+        else
+        resolve(res)
+      })
+  })
+}
+let results=await Promise.all(req.files.map((file)=>{
+  const filePath=path.resolve(__dirname,"../","../",file.path)
+  return uploadToCloudinary(filePath)
+}))
+results=results.map((fileObj)=>{
+  return {
+    url:fileObj.secure_url,
+    public_id:fileObj.public_id
+  }
+})
+req.fileObjs=results
+console.log("file has been shared")
+console.log(req.fileObjs)
+next()
 })
 const uploadLocal=multer({storage})
-module.exports={uploadLocal}
+module.exports={uploadLocal,storeProfileImagesToCloudinary}

@@ -110,3 +110,14 @@ exports.login = catchAsync(async function (req, res, next) {
     req.profile=profile
     next()
   })
+
+exports.updateTheCurrentlySessionedUser=catchAsync(async function(req,res,next){
+    const userId=req.userId
+    const file=req.fileObjs[0].url
+   const profile=await db.update(users).set({profileUrl:file}).where(eq(users.id,userId)).returning({
+    profileUrl:users.profileUrl,
+    user_id:users.id
+   })
+   res.status(201).json(profile)
+   
+})
