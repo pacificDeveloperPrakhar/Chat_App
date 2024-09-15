@@ -9,12 +9,13 @@ import google from "../assets/logos/google.svg"
 import {useDispatch} from "react-redux";
 import {loginUserAction,addUserAction} from "../slices/userSlice";
 import { useSelector } from 'react-redux';
-import { openNewToast } from '../slices/toastSlice';
+import { useLocation } from 'react-router-dom';
 export default function () {
   const dispatch=useDispatch()
-  const [isLogin, setIsLogin] = useState(true);
+  const location=useLocation()
+  console.log(location.state)
+  const [isLogin, setIsLogin] = useState(location.state=="not verified"?false:true);
   const [showPassword, setShowPassword] = useState(false);
-  const error=useSelector(state=>state.user.error)
   const [user,setUser]=useState({})
 //  a function to handle the input when submitted from the form
 function input(e){

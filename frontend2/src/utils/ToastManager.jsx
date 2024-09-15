@@ -18,8 +18,13 @@ function RegistrationError(){
 function RegistrationSuccess(){
   const dispatch=useDispatch()
   const user=useSelector(state=>state.user.user)
-  console.log(user)
   useEffect(()=>{
+    
+  if(!Object.values(user).length)
+  {
+    dispatch(openNewToast({mssg:"sign in to proceed",type:"info"}))
+    return
+  }
   const info=checkUserVerificability(user)
   dispatch(openNewToast(info))
   },[user]
