@@ -13,7 +13,7 @@ router.route("/authenticate").get(authenticateRequest,(req,res,next)=>{
         message:"you have been authenticated"
     })
 })
-router.route("/updateCurrentlySessionedUser").post(authenticateRequest,uploadLocal.array("images",6),storeProfileImagesToCloudinary,updateTheCurrentlySessionedUser)
+router.route("/updateCurrentlySessionedUser").post(authenticateRequest,uploadLocal.single("images"),storeProfileImagesToCloudinary,updateTheCurrentlySessionedUser)
 router.route("/signup").post(signup,tokenGenerator,attachProfile,sendMail)
 router.route("/signup/:verifyId").get(authenticateVerification,issueToken)
 router.route("/logout").post(logoutCurrentlySessionedUser)

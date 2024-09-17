@@ -12,6 +12,7 @@ const device=require("express-device");
 app.use(cookieParser())
 app.use((req,res,next)=>{
     console.log("cookies",req.cookies)
+    console.log(req.originalUrl,":","content-type",req.headers['content-type'])
     next()
 })
 // Initialize Express app

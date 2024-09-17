@@ -2,7 +2,7 @@ const catchAsync=require("../utils/catchAsync")
 const {validateProfile,compareThePassword,compareResetToken}=require('../utils/validateProfile')
 const appError=require("../utils/appErrors")
 const {db}=require("../db/db_connection")
-const {users}=require("../db/schema/schema.js")
+const {users, message}=require("../db/schema/schema.js")
 // will use jwt to create token while login and signup and store the in the session
 const jwt = require("jsonwebtoken");
 const { eq, lt, gte, ne } =require('drizzle-orm');
@@ -113,11 +113,16 @@ exports.login = catchAsync(async function (req, res, next) {
 
 exports.updateTheCurrentlySessionedUser=catchAsync(async function(req,res,next){
     const userId=req.userId
+    if(!req.fileObjs?.length)
+        return next(new appError(req.errorMssg,req.statusCode))
     const file=req.fileObjs[0].url
    const profile=await db.update(users).set({profileUrl:file}).where(eq(users.id,userId)).returning({
     profileUrl:users.profileUrl,
-    user_id:users.id
+    user_id:users.id,
+    
    })
-   res.status(201).json(profile)
+   res.status(201).json({data:profile,message:req.successMssg})
    
 })
+// i prakhar has a message for anyone reading the code 
+// the code here and rather i should say at most of the files in project is very clumsy and hard to read

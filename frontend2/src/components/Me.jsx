@@ -12,7 +12,8 @@ export default function Me () {
   const dispatch=useDispatch()
   const data=useRef({})
   function handlefileUpload(e){
-    data.current={...data.current,[e.target.name]:e.target.value}
+    const value=e.target?.files?.[0]||e.target.value
+    data.current={...data.current,[e.target.name]:value}
     dispatch(updatedUserProfilePicture(data.current))
   }
   useEffect(()=>{

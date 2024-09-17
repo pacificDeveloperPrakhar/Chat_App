@@ -16,21 +16,28 @@ const storage=multer.diskStorage({
     const xtension=file.originalname.split(".").find((str)=>validExtensions.includes(str))
     if(!xtension)
       {
-      console.log(`${file.originalname} is not valid to be able to be exported to the database`)
+        console.log(`${file.originalname} is not valid to be able to be exported to the database`)
       return cb(null,false)
 }
     return cb(null,`${userId}-${time}-${uniqueFactor}.${xtension}`)
   }
 })
 const fileFilter=function(req,file,cb){
+  console.log("here lies my code")
+  console.log("file from filter",req.file)
+  console.log("files from filter",req.files)
   const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp','image/svg+xml',"image/jpg"];
   if(allowedMimeTypes.includes(file.mimetype)){
     console.log("file upload has been accepted")
+    req.successMssg="image has been uploaded successfully"
+    req.statusCOde=201
     cb(null,true)
   }
   else
   {
     console.log("file has been rejected")
+    req.errorMssg=`from author :you can use png,svg, jpeg and jpeg format only`
+    req.statusCode=400
     cb(null,false)
   }
 }
@@ -42,7 +49,11 @@ cloudinary.config({
 })
 
 const storeProfileImagesToCloudinary=catchAsync(async(req,res,next)=>{
-  console.log("1")
+console.log("files:",req.files)
+console.log("file:",req.file)
+if(!req.files)
+  req.files=[]
+req.files=[...req.files,req.file]
 const uploadToCloudinary=function(filePath){
   return new Promise((resolve,reject)=>{
       cloudinary.uploader.upload(filePath,{folder:"profiles"},(err,res)=>{

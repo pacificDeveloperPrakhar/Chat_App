@@ -1,5 +1,6 @@
-import {createSlice,createAsyncThunk} from "@reduxjs/toolkit"
+import {createSlice,createAsyncThunk, current} from "@reduxjs/toolkit"
 import axios from '../utils/axiosConfigured'
+import { axiosInstanceForMultipart } from "../utils/axiosConfigured"
 // initially when our app will start it will look for the info
 // from the local storage and then it will store that into the redux store
 const userState={
@@ -13,13 +14,6 @@ const userState={
 export const logoutAction=createAsyncThunk("user/logout",async (payload,{rejectWithValue,getState,dispatch})=>{
   try
   {
-    const config = {
-      headers: {
-        
-        "Content-Type": "application/json",
-      },
-      withCredentials:true
-    };
     const {data:{data:{message}}} = await axios.post(
       "/profiles/logout",
       payload
@@ -119,16 +113,23 @@ export const addUserAction = createAsyncThunk(
   export const updatedUserProfilePicture=createAsyncThunk("user/upload_image",async function (payload,{rejectWithValue,getState,dispatch}) {
      const {images}=payload
      const formData=new FormData();
-     formData.append("images",[images])
+     formData.append("images",images)
+     console.log(formData.getAll("images"))
      try{
            // Replace `/api/upload` with your actual API endpoint
-           const response = await axios.post('/profiles/updateCurrentlySessionedUser/', formData, {
-          });
-          return 
+           axios.defaults.headers
+           const response = await axiosInstanceForMultipart.post("/profiles/updateCurrentlySessionedUser/",formData,{
+            headers: {
+              'Content-Type':'multipart/form-data',
+            }}
+           )
+           console.log(response.data)
+          return response.data
      }
-     catch(err){
+     catch(error){
       // this will not give a very specific error detail because i have not give proper error response on when server fails to
       // handle the error when a different type of file is exported
+      console.log(error.response)
       return rejectWithValue(error.response?.data?.message || 'Error uploading image');
      }     
   })
@@ -189,9 +190,20 @@ export const addUserAction = createAsyncThunk(
         });
         // these are promises cases handling for the when user uploads the pic this is for user/uploadPicture thunk
 
-        builder.addCase(updatedUserProfilePicture.pending,(state,action)=>{})
-        builder.addCase(updatedUserProfilePicture.fulfilled,(state,action)=>{})
-        builder.addCase(updatedUserProfilePicture.rejected,(state,action)=>{})
+        builder.addCase(updatedUserProfilePicture.pending,(state)=>{
+          state.isLoading=true;
+          state.error=null;
+        })
+        builder.addCase(updatedUserProfilePicture.fulfilled,(state,action)=>{
+          state.isLoading=false
+          state.message={mssg:action.payload.message,type:"success",};
+          state.user.profileUrl=action.payload.data[0].profileUrl;
+        })
+        builder.addCase(updatedUserProfilePicture.rejected,(state,action)=>{
+          state.isLoading=false
+          console.log(action.payload)
+          state.error=action.payload
+        })
         builder.addCase(logoutAction.rejected,(state,action)=>{
           state.isLoading = false;
           state.error = action.payload;
