@@ -19,7 +19,7 @@ function RegistrationSuccess(){
   const dispatch=useDispatch()
   const user=useSelector(state=>state.user.user)
   useEffect(()=>{
-    
+
   if(!Object.values(user).length)
   {
     dispatch(openNewToast({mssg:"sign in to proceed",type:"info"}))

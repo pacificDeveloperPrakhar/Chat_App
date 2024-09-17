@@ -196,8 +196,9 @@ export const addUserAction = createAsyncThunk(
         })
         builder.addCase(updatedUserProfilePicture.fulfilled,(state,action)=>{
           state.isLoading=false
-          state.message={mssg:action.payload.message,type:"success",};
+          state.message={mssg:action.payload.message,type:"success",preventUserRender:true};
           state.user.profileUrl=action.payload.data[0].profileUrl;
+          localStorage.setItem("user",JSON.stringify(state.user));
         })
         builder.addCase(updatedUserProfilePicture.rejected,(state,action)=>{
           state.isLoading=false

@@ -20,7 +20,7 @@ app.use(device.capture())
 // this is for the cors ,enabling the cors extension or if u use any sort of extension then it might hinder with how your preflight 
 // response and may give u an error so if u encounter any error while performing an http request make sure to disable it
 app.use(cors({
-    origin: 'http://localhost:3000',  // i have changed it to allow it to accept request from one specific source only
+    origin: ['http://localhost:3000','http://localhost:1234'],  // i have changed it to allow it to accept request from one specific source only
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  
     allowedHeaders: ['Content-Type', 'Authorization'],  
     credentials: true ,

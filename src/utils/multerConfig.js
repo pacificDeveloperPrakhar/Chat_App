@@ -12,12 +12,11 @@ const storage=multer.diskStorage({
     req.userId=userId
     const uniqueFactor=Math.round(Math.random()*1e9)
     const time=Date.now();
-    const validExtensions=["svg","jpeg","jpg","xml","png"]
+    const validExtensions=["svg","jpeg","jpg","xml","png","webp"]
     const xtension=file.originalname.split(".").find((str)=>validExtensions.includes(str))
     if(!xtension)
       {
         console.log(`${file.originalname} is not valid to be able to be exported to the database`)
-      return cb(null,false)
 }
     return cb(null,`${userId}-${time}-${uniqueFactor}.${xtension}`)
   }
@@ -26,7 +25,7 @@ const fileFilter=function(req,file,cb){
   console.log("here lies my code")
   console.log("file from filter",req.file)
   console.log("files from filter",req.files)
-  const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp','image/svg+xml',"image/jpg"];
+  const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp','image/svg+xml',"image/jpg","image/webp"];
   if(allowedMimeTypes.includes(file.mimetype)){
     console.log("file upload has been accepted")
     req.successMssg="image has been uploaded successfully"

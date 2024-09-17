@@ -5,9 +5,10 @@ import { IoIosChatboxes } from "react-icons/io";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import Avatar from"./AvatarOnline&Offline"
 import SocketManager from '../utils/SocketManager';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { logoutAction } from '../slices/userSlice';
 export default function ChatLayout() {
+  const {profileUrl,username}=useSelector(state=>state.user.user)
   const dispatch=useDispatch()
   function logoutHandler(){
     // first delete the user key value pair from the localStorage from the browser
@@ -48,7 +49,7 @@ export default function ChatLayout() {
         <RiLogoutBoxRLine />
         </span>
         <Link to="me" className='nav-link'>
-          <Avatar online={false}/>
+          <Avatar online={false} src={profileUrl} username={username}/>
         </Link>
          </div>
 
