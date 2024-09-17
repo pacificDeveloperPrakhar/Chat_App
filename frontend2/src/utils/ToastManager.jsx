@@ -32,6 +32,19 @@ function RegistrationSuccess(){
 return <>
 </>
 }
+// this fragment will lookout for message state change
+function Dispatch_Toast_When_The_Message_State_In_User_Changes(){
+  const dispatch=useDispatch()
+  const message=useSelector(state=>state.user.message)
+  useEffect(()=>{
+    if(message){
+      console.log(message)
+      dispatch(openNewToast(message))
+    }
+  },[message])
+  return <>
+  </>
+}
 // this fragment will contain all the smaller empty fragments that will be subsribed to specific type of error filed in the state and slo those field which needs to be 
 // displayed in form of toast to user
 export default function (){ 
@@ -39,6 +52,7 @@ export default function (){
     <React.Fragment>
         <RegistrationError/>
         <RegistrationSuccess/>
+        <Dispatch_Toast_When_The_Message_State_In_User_Changes/>
     </React.Fragment>
   )
 }

@@ -1,6 +1,7 @@
 const express = require("express");
 const profileRoutes = require("./routes/profileRoutes.js");
 const session = require('express-session');
+const cookieParser=require("cookie-parser")
 const cors = require('cors');
 const MongoStore = require('connect-mongo');
 const app = express();
@@ -8,17 +9,17 @@ const http = require("http");
 const server = http.createServer(app); 
 const conversationRoute=require("./routes/conversationRoute.js")
 const device=require("express-device");
-const { message } = require("./db/schema/schema.js");
-// Initialize Express app
-
-// Enable CORS for all origins and HTTP methods
+app.use(cookieParser())
 app.use((req,res,next)=>{
-    console.log("request has been encountered")
+    console.log("cookies",req.cookies)
     next()
 })
+// Initialize Express app
 app.use(device.capture())
+// this is for the cors ,enabling the cors extension or if u use any sort of extension then it might hinder with how your preflight 
+// response and may give u an error so if u encounter any error while performing an http request make sure to disable it
 app.use(cors({
-    origin: '*',  // Allow all origins
+    origin: 'http://localhost:3000',  // i have changed it to allow it to accept request from one specific source only
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  
     allowedHeaders: ['Content-Type', 'Authorization'],  
     credentials: true ,
@@ -42,6 +43,10 @@ app.use(session({
     }
 }));
 // Middleware to parse JSON request bodies
+app.use((req,res,next)=>{
+    console.log(req.session)
+    next()
+})
 app.use(express.json());
 
 // Route handling for profile-related actions
@@ -61,6 +66,7 @@ app.use((req,res,next)=>{
 // error handling route
 app.use((err,req,res,next)=>{
     const error=({stack:err.stack,message:err.message,name:err.name,...err})
+    err["status code"]=err["status code"]||500;
     res.status(err['status code']).json({...error})
     
 })

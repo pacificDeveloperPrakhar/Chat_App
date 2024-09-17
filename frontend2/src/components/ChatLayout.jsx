@@ -2,9 +2,22 @@ import React from 'react';
 import { Outlet,Link } from 'react-router-dom';
 import { IoIosSettings } from 'react-icons/io';
 import { IoIosChatboxes } from "react-icons/io";
+import { RiLogoutBoxRLine } from "react-icons/ri";
 import Avatar from"./AvatarOnline&Offline"
 import SocketManager from '../utils/SocketManager';
+import { useDispatch } from 'react-redux';
+import { logoutAction } from '../slices/userSlice';
 export default function ChatLayout() {
+  const dispatch=useDispatch()
+  function logoutHandler(){
+    // first delete the user key value pair from the localStorage from the browser
+    const user=JSON.parse(localStorage.getItem("user"))
+    if(!user)
+      return 
+    localStorage.removeItem("user")
+    //here i will dispatch an action that will hit the route that will cause the deletion of the session document from the server mongodb 
+    dispatch(logoutAction())
+  }
   return (
     <>
     <div className='ChatLayout flex h-full'>
@@ -29,6 +42,11 @@ export default function ChatLayout() {
           <IoIosSettings className='text-4xl' />
           </Link>
         </button>
+        <span className='header_button' style={{
+          height: "2.6rem", width: "2.6rem", padding: "0.5rem" 
+        }} onClick={logoutHandler}>
+        <RiLogoutBoxRLine />
+        </span>
         <Link to="me" className='nav-link'>
           <Avatar online={false}/>
         </Link>

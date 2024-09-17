@@ -1,5 +1,5 @@
 import {createSlice,createAsyncThunk} from "@reduxjs/toolkit"
-import axios from "axios"
+import axios from '../utils/axiosConfigured'
 // initially when our app will start it will look for the info
 // from the local storage and then it will store that into the redux store
 const userState={
@@ -10,6 +10,32 @@ const userState={
     isAdding:false,
     message:null,
 }
+export const logoutAction=createAsyncThunk("user/logout",async (payload,{rejectWithValue,getState,dispatch})=>{
+  try
+  {
+    const config = {
+      headers: {
+        
+        "Content-Type": "application/json",
+      },
+      withCredentials:true
+    };
+    const {data:{data:{message}}} = await axios.post(
+      "/profiles/logout",
+      payload
+    );
+    console.log(message)
+    return message
+  }
+  catch(err)
+  {
+    
+    if(!err.response)
+      return (rejectWithValue( JSON.parse(JSON.stringify(err)),"error was seen"));
+      return (rejectWithValue( JSON.parse(JSON.stringify(err.response.data)),"error was seen"));
+    
+  }
+})
 export const addUserAction = createAsyncThunk(
     "user/add",
     async (payload, { rejectWithValue, getState, dispatch }) => {
@@ -24,13 +50,14 @@ export const addUserAction = createAsyncThunk(
              },
            };
         const { data } = await axios.post(
-          "http://127.0.0.1:3124/profiles/signup",
-          payload,config
+          "/profiles/signup",
+          payload
         );
         return data;
       } catch (err) {
-        console.log(JSON.parse(JSON.stringify(err)));
-        return (rejectWithValue( JSON.parse(JSON.stringify(err)),"error was seen"));
+        if(!err.response)
+          return (rejectWithValue( JSON.parse(JSON.stringify(err)),"error was seen"));
+          return (rejectWithValue( JSON.parse(JSON.stringify(err.response.data)),"error was seen"));
       }
     }
   );
@@ -44,18 +71,23 @@ export const addUserAction = createAsyncThunk(
   
   
            const config = {
+            withCredentials:true,
              headers: {
                
                "Content-Type": "application/json",
              },
            };
         const response = await axios.post(
-          "http://127.0.0.1:3124/profiles/login",
-          payload,config
+          "/profiles/login",
+          payload
         );
-        console.log(response)
+        // for now session id is coming from the  payload of response later when
+        // when i will be done with the hosting and make it production ready 
+        // then i will make sure that the token and sessionID are send it in
+        // the header
         const {data}=response
-        console.log(data)
+        const {data:{sessionID}}=response
+        document.cookie = `connect.sid=${sessionID}; path=/; secure; samesite=strict; max-age=3600`;
         return data;
       } catch (err) {
         console.log(err.response);
@@ -84,7 +116,22 @@ export const addUserAction = createAsyncThunk(
       }
     }
   );
-  
+  export const updatedUserProfilePicture=createAsyncThunk("user/upload_image",async function (payload,{rejectWithValue,getState,dispatch}) {
+     const {images}=payload
+     const formData=new FormData();
+     formData.append("images",[images])
+     try{
+           // Replace `/api/upload` with your actual API endpoint
+           const response = await axios.post('/profiles/updateCurrentlySessionedUser/', formData, {
+          });
+          return 
+     }
+     catch(err){
+      // this will not give a very specific error detail because i have not give proper error response on when server fails to
+      // handle the error when a different type of file is exported
+      return rejectWithValue(error.response?.data?.message || 'Error uploading image');
+     }     
+  })
   const userSlice = createSlice({
     name: 'user',
     initialState: userState,
@@ -133,13 +180,32 @@ export const addUserAction = createAsyncThunk(
           state.isLoading = false;
           state.users = action.payload; 
           state.error = null;
-          state.message = 'Users updated successfully';
+          console.log("users array from the socket has been received ,this suggest a new socket has connected to the server")
         })
         .addCase(usersConnectionModify.rejected, (state, action) => {
           state.isLoading = false;
           state.error = action.payload;
           state.message = 'Failed to update users';
         });
+        // these are promises cases handling for the when user uploads the pic this is for user/uploadPicture thunk
+
+        builder.addCase(updatedUserProfilePicture.pending,(state,action)=>{})
+        builder.addCase(updatedUserProfilePicture.fulfilled,(state,action)=>{})
+        builder.addCase(updatedUserProfilePicture.rejected,(state,action)=>{})
+        builder.addCase(logoutAction.rejected,(state,action)=>{
+          state.isLoading = false;
+          state.error = action.payload;
+        })
+        builder.addCase(logoutAction.pending,(state,action)=>{
+          state.isAdding=true;
+          state.isLoading=true;
+        })
+        builder.addCase(logoutAction.fulfilled,(state,action)=>{
+          state.isAdding=false;
+          state.isLoading=false;
+          state.message={mssg:action.payload,type:"success"};
+          state.user={};
+        })
     },
   });
   export default userSlice.reducer;

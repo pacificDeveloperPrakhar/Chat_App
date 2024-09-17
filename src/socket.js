@@ -80,6 +80,9 @@ io.on('connection', async (socket) => {
         delete socketCollection[socket.id]
         console.log('socket disconnected:', socket.id)
     })
+    socket.on("user_changed",async()=>{
+        io.emit("new_socket_connection", { users })
+    })
 })
 
 // Clear socket arrays on server start

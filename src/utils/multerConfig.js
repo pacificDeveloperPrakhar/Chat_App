@@ -68,5 +68,5 @@ console.log("file has been shared")
 console.log(req.fileObjs)
 next()
 })
-const uploadLocal=multer({storage})
+const uploadLocal=multer({storage,fileFilter})
 module.exports={uploadLocal,storeProfileImagesToCloudinary}

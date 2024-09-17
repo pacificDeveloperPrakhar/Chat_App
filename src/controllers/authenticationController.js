@@ -2,10 +2,11 @@ const jwt=require("jsonwebtoken")
 const catchAsync=require("../utils/catchAsync")
 const appError=require("../utils/appErrors")
 const {db}=require("../db/db_connection")
-const {users,verification_factors}=require("../db/schema/schema.js")
+const {users,verification_factors, message}=require("../db/schema/schema.js")
 const path=require("path")
 const { eq, lt, gte, ne } =require('drizzle-orm');
 const {validateProfile,compareThePassword,compareResetToken,createResetTokenPassword}=require('../utils/validateProfile')
+const { date } = require("drizzle-orm/pg-core")
 const privateKey = process.env.SECRET_KEY
 // issuing token and storing that inside the session storage
 exports.issueToken=catchAsync(async function(req,res,next){
@@ -23,12 +24,15 @@ exports.issueToken=catchAsync(async function(req,res,next){
     req.session.userId=req.profile?.id
     req.session.token=req.token
     // send the response
+    const sessionID=req.sessionID
 
     res.status(req.status||201).json({
       status:"ok",
       data:{
-        profile:req.profile
-      }
+        profile:req.profile,
+      },
+      token:req.token,
+      sessionID
     })
     
 })
@@ -160,4 +164,21 @@ exports.tokenGenerator=catchAsync(async function(req,res,next){
     const {username}=profile
     req.token=jwt.sign({ email, username }, privateKey);
     next()
+  })
+
+  // here i will be creating a middleware to delete the session document of the specific session id 
+  // in sort terms i am actually logging out the user by deleting the session doc corresponding to the incomming
+  // user session id 
+
+  exports.logoutCurrentlySessionedUser=catchAsync(async function(req,res,next) {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({data:{
+          message:"falied to logout:unable to delete the session doc"
+        }});
+      }
+      res.clearCookie('connect.sid'); 
+      res.status(200).json({data:{
+        message:"you have been successfully logged out"
+      }});})
   })

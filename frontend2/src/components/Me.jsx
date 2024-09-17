@@ -1,13 +1,22 @@
-import React, { useEffect ,useState} from 'react'
+import React, { useEffect ,useRef} from 'react'
 import Avatar from "./AvatarOnline&Offline";
 import { MdOutlineArrowUpward } from "react-icons/md";
 import { useSelector } from 'react-redux';
 import { IoCloudDoneOutline } from "react-icons/io5";
-import { set } from 'mongoose';
+import axios from '../utils/axiosConfigured';
+import { useDispatch } from 'react-redux';
+import { updatedUserProfilePicture } from '../slices/userSlice';
 export default function Me () {
   const user=useSelector(state=>state.user.user)
   const users=useSelector(state=>state.user.users)
+  const dispatch=useDispatch()
+  const data=useRef({})
+  function handlefileUpload(e){
+    data.current={...data.current,[e.target.name]:e.target.value}
+    dispatch(updatedUserProfilePicture(data.current))
+  }
   useEffect(()=>{
+    document.cookie="hi this is me"
     if(!user?.profileUrl)
       return
     console.log(user.profileUrl)
@@ -20,10 +29,26 @@ export default function Me () {
           <Avatar size={190} src={user?.profileUrl} username={user?.username}/>
           <span className='upload absolute  p-3 ' style={{
             fontSize:"3rem"
-          }}>{!user?.profileUrl?<MdOutlineArrowUpward />:<IoCloudDoneOutline />}</span>
+          }}>
+            <label htmlFor="images">
+              
+            {!user?.profileUrl?<MdOutlineArrowUpward />:<IoCloudDoneOutline />}
+          <input type="file" name="images" id="images" className='hidden' onChange={handlefileUpload}/>
+            </label>
+          </span>
        </div>
-       .
+       <button onClick={async ()=>{
+        await axios.get('/profiles/authenticate')
+        .then(response => {
+          console.log('Response data:', response.data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      
+       }}>verify the authentication</button>
       </div>
+
     </div>
   )
 }
