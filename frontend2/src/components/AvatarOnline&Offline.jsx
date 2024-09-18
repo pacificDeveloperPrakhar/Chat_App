@@ -32,7 +32,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-export default function OnlineBadgeAvatar({ online = false, size = 40 ,username="prakhar", src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Kim_Jong-un_April_2019_%28cropped%29.jpg/800px-Kim_Jong-un_April_2019_%28cropped%29.jpg"}) {
+export default function OnlineBadgeAvatar({ online = false, size = 40 ,username="unloaded", src=""}) {
   const avatarStyle = {
     width: `${size}px`,
     height: `${size}px`,
@@ -48,7 +48,7 @@ export default function OnlineBadgeAvatar({ online = false, size = 40 ,username=
         >
           <Avatar
             alt={username}
-            src="/static/images/avatar/1.jpg"
+            src={src}
             sx={avatarStyle}
           />
         </StyledBadge>

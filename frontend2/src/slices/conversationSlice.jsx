@@ -18,9 +18,8 @@ export const restoreConversationsSession = createAsyncThunk(
     try {
       dispatch(conversationSlice.actions.addConversationsToStore(payload));
       const state = getState();
-      const chatsUrl = (conversationId) =>
-        // prakhar:this code of communication slice is the same one that i did use in the previous frontend project
-        `/conversation/${conversationId}/chats?limit=13&page=1`;
+      const chatsUrl = (conversationId) =>`/conversation/${conversationId}/chats?limit=13&page=1`;
+      // prakhar:this code of communication slice is the same one that i did use in the previous frontend project
       const messagesPayload = [];
 
       for (let i = 0; i < state.conversations.conversations.length; i++) {

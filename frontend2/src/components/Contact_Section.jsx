@@ -3,8 +3,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import ChatTab from './Chat_Tab';
 import { RiInboxArchiveLine } from "react-icons/ri";
 import ConversationItem from './ConversationItem';
-
+import { useSelector } from 'react-redux';
 export default function Contact_Section() {
+  const users=useSelector(state=>state.user.users)
+  const conversations=useSelector(state=>state.conversations.conversations)
   const [selected_convo, setSelected] = useState(null);
 
   const handleSelectConversation = (convo) => {
@@ -21,10 +23,10 @@ export default function Contact_Section() {
 
       <ul>
         <AnimatePresence>
-          {[{ conversation: 1 }, { conversation: 2 }, { conversation: 3 }, { conversation: 4 }].map((convo, index) => {
+          {conversations.map((convo, index) => {
             return (
               <motion.li
-                key={convo.conversation}
+                key={convo.id}
                 className="relative"
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -34,8 +36,8 @@ export default function Contact_Section() {
               >
                 <ConversationItem
                   convo={convo}
+                  users={users}
                   selected_convo={selected_convo}
-                  unreadMessages={3}
                 />
               </motion.li>
             );

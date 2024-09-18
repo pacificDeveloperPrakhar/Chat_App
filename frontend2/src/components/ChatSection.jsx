@@ -5,7 +5,7 @@ export default function ChatSection() {
     
   return (
     <>
-      <Contact_Section/>
+      {<Contact_Section/>}
       <div className="chatContainer relative" style={{ flexGrow:6 }}>
       <ChatContainer/>
       </div>

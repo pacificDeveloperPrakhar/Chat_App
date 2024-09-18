@@ -29,7 +29,7 @@ const ChatTab = () => {
       </div>
 
 
-      <motion.div className="chat-tab-tabs" layout>
+      {<motion.div className="chat-tab-tabs" layout>
         {['unread', 'all', 'group'].map(tab => (
           <div key={tab} className="relative tab_bar" onClick={() => handleTabClick(tab)}>
             <motion.span
@@ -46,7 +46,7 @@ const ChatTab = () => {
             )}
           </div>
         ))}
-      </motion.div>
+      </motion.div>}
 
       <div className="chat-tab-search">
         <FaSearch className="search-icon" />
