@@ -55,7 +55,7 @@ export default function ConversationItem({ convo, selected_convo ,users}) {
             damping: 15,   // Higher damping to avoid "bouncy" motion
             mass: 1,       // Affects how "heavily" the element moves
             ease: 'easeInOut', // Smooth ease-in-out curve
-            duration: 0.8  // Control the overall speed of the animation
+            duration: 0.2  // Control the overall speed of the animation
           }}
         >
           <div className="avatar_section justify-center items-center py-5 px-2">
