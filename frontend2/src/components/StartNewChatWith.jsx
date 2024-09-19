@@ -1,15 +1,34 @@
-import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import {motion,AnimatePresence} from "framer-motion"
+import React, { useEffect,useState } from 'react'
+import { useSelector ,useDispatch} from 'react-redux'
+import ProfileTile from "./ProfileTile"
+import {motion} from "framer-motion"
+import {setSelectedUsers} from '../slices/utilsSlice'
+import { createContext } from 'react'
 export default function StartNewChatWith() {
-    const users=useSelector(state=>state.user.users)
-    useEffect(()=>{},[])
+    const dispatch=useDispatch()
+    const users=useSelector(state=>state.user.users.filter((user)=>user.is_verified!=false&&user.id!=state.user.user.id))
+    const [selected_user, setSelected] = useState([]);
+    const handleSelectUser = (user) => {
+      let su
+      if(selected_user.includes(user)){
+        su=(selected_user.filter((u=>u.id!=user.id)))
+      }
+      else
+      su=([...selected_user,user]);
+    setSelected(su)
+    dispatch(setSelectedUsers(su))
+    };
+    useEffect(()=>{
+      return()=>{
+        dispatch(setSelectedUsers([]))
+      }
+    },[  ])
   return (
+    <motion.ul>
     <>
     {
-        users.map((user)=>{
-            return <>
-            <AnimatePresence>
+      users.map((user)=>{
+        return <>
                 <motion.li
                 key={user.id}
                 className="relative"
@@ -17,14 +36,17 @@ export default function StartNewChatWith() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 50 }}
                 transition={{ type: 'spring', stiffness: 100, damping: 15 }}
-                onClick={() => handleSelectUser(convo.conversation)}>
+                onClick={() => handleSelectUser(user)}>
+                  <ProfileTile user={user} selected_user={selected_user}/>
                 </motion.li>
-            </AnimatePresence>
+       
             
             </>
         })
     }
     </>
+ </motion.ul>
+
   )
 }
 // users = [{
