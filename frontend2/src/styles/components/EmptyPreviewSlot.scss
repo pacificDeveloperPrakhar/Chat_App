@@ -1,0 +1,12 @@
+@use "../utils/colors.scss";
+.slot{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(190px);
+    background: linear-gradient(to right, rgba(colors.$primary-base, 0.6), rgba(colors.$primary-base, 0) 100%);
+    color: aliceblue;font-size: 1.1rem;
+    
+}

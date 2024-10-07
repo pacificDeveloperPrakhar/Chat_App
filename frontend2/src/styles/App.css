@@ -268,7 +268,7 @@ input {
 .selected_convo {
   position: absolute;
   inset: 0;
-  background-color: #73368e;
+  background-color: #5b2474;
   z-index: 0;
 }
 
@@ -618,6 +618,18 @@ input {
 .upload:hover {
   background-color: rgba(91, 36, 116, 0.7);
   box-shadow: 0 4px 8px rgba(27, 206, 223, 0.4);
+}
+
+.slot {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(190px);
+  background: linear-gradient(to right, rgba(91, 36, 116, 0.6), rgba(91, 36, 116, 0) 100%);
+  color: aliceblue;
+  font-size: 1.1rem;
 }
 
 #root {

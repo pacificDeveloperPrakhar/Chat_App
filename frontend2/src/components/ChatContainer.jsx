@@ -1,6 +1,8 @@
 import React from 'react';
 import { ImAttachment } from "react-icons/im";
 import { GrSend } from "react-icons/gr";
+import { useSelector } from 'react-redux';
+import EmptyPreviewSlot  from './EmptyPreviewSlot';"./EmptyPreviewSlot"
 import { Avatar } from '@mui/material';"./AvatarOnline&Offline"
 import { PiDotsThreeOutlineVerticalLight } from "react-icons/pi";
 import { MdOutlineVideoCall } from "react-icons/md";
@@ -8,6 +10,17 @@ import { MdAddCall } from "react-icons/md";
 <PiDotsThreeOutlineVerticalLight />
 
 export default function ChatContainer() {
+  const conversation=useSelector(state=>state.utils.selectConversation)
+  const users=useSelector(state=>state.user.users)
+  let participantUsers
+  if(conversation)
+  participantUsers=users.filter(user=>conversation.participants.includes(user))
+  conversation&&console.log(conversation)
+  if(!conversation)
+  return (
+<>
+<EmptyPreviewSlot/ >
+</>)
   return (
     <div className=' absolute inset-0 flex flex-col chat'>
       <header className="chat_header bg-green-500 p-4 flex items-center justify-between shadow-md">

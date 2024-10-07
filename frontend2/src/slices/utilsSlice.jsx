@@ -1,7 +1,9 @@
+import { selectClasses } from "@mui/material";
 import { createSlice } from "@reduxjs/toolkit";
 const initialState={
     openNewChatNav:false,
-    selectedUsers:[]
+    selectedUsers:[],
+    selectConversation:null
 }
 const uitlSlices=createSlice({
     name:"utils",
@@ -12,8 +14,11 @@ const uitlSlices=createSlice({
         },
         setSelectedUsers:function(state,{payload}){
             state.selectedUsers=payload
+        },
+        setSelectedConversation:function(state,{payload}){
+            state.selectConversation=payload
         }
     }
 })
 export default uitlSlices.reducer
-export const {toggleNewChatNav,setSelectedUsers}=uitlSlices.actions
+export const {toggleNewChatNav,setSelectedUsers,setSelectedConversation}=uitlSlices.actions

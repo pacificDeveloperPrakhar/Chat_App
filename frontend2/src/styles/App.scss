@@ -10,6 +10,7 @@
 @use "./components/Form.scss";
 @use "./components/snackbar.scss";
 @use "./components/Me.scss";
+@use "./components/EmptyPreviewSlot.scss";
 #root {
   max-width: 1280px;
   margin: 0 auto;

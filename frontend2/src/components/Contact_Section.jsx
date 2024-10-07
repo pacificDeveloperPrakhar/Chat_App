@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useDispatch } from 'react-redux';
+import {setSelectedConversation} from "../slices/utilsSlice"
 import StartNewChatWith from './StartNewChatWith';
 import ChatTab from './Chat_Tab';
 import { RiInboxArchiveLine } from "react-icons/ri";
@@ -13,12 +15,13 @@ export default function Contact_Section() {
   //otherwise all communication will be displayed
   const openNewChatNav=useSelector(state=>state.utils.openNewChatNav)
   const users=useSelector(state=>state.user.users)
+  const dispatch=useDispatch()
   const conversations=useSelector(state=>state.conversations.conversations)
   const [selected_convo, setSelected] = useState(null);
   const handleSelectConversation = (convo) => {
     setSelected(convo);
+    dispatch(setSelectedConversation(convo))
   };
-  console.log(selected_convo)
   return (
     <div className="contact_section flex-auto flex flex-col relative">
       <ChatTab />
