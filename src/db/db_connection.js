@@ -1,4 +1,4 @@
-const { pgTable, serial, text, varchar } = require('drizzle-orm/pg-core');
+
 const { drizzle } = require('drizzle-orm/node-postgres');
 const pg = require('pg');       
 const dotenv = require("dotenv");
@@ -18,6 +18,8 @@ client.connect()
   .catch(err => console.log(err));
 
 // Export the database instance
+// you can use this other object to create custom log such as logging
+// queries whene rhey are executed
 const db = drizzle(client,{});
 
 module.exports = { db };

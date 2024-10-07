@@ -174,7 +174,7 @@ const conversationSlice = createSlice({
        const convo=action.payload
        const state=current(previousState)
        let conversations=[...current(previousState.conversations)]
-       let conversation=conversations.find((convo)=>convo.id==newConvo.id)
+       let conversation=conversations.find((c)=>c.id==convo.id)
        if(conversation)
         { console.log("new conversation does already exists")
           return

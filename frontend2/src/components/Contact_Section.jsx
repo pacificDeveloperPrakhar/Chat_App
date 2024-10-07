@@ -18,7 +18,7 @@ export default function Contact_Section() {
   const handleSelectConversation = (convo) => {
     setSelected(convo);
   };
-
+  console.log(selected_convo)
   return (
     <div className="contact_section flex-auto flex flex-col relative">
       <ChatTab />
@@ -41,6 +41,8 @@ export default function Contact_Section() {
       {!openNewChatNav?<motion.ul layout initial={{opacity:0,x:-100}} animate={{opacity:1,x:0}} transition={{duration:0.01}} className=' '>
 
           {<>
+          {users.length&&
+          <>
           {conversations.map((convo, index) => {
             return (
               <motion.li
@@ -49,17 +51,18 @@ export default function Contact_Section() {
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 50 }}
-                transition={{ type: 'spring', stiffness: 100, damping: 15 }}
-                onClick={() => handleSelectConversation(convo)}
-                >
+              transition={{ type: 'spring', stiffness: 100, damping: 15 }}
+              onClick={() => handleSelectConversation(convo)}
+              >
                 <ConversationItem
                   convo={convo}
                   users={users}
                   selected_convo={selected_convo}
-                />
+                  />
               </motion.li>
             );
           })}
+          </>}
             </>}
       </motion.ul>:<StartNewChatWith/>}
 

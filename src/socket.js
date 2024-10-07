@@ -11,9 +11,10 @@ const socketCollection = {}
 // Start Socket.IO server
 const io = Socket(server, {
     cors: {
-        origin: "*", // Allow all origins for development
+        origin: ['http://localhost:3000','http://localhost:1234'],
         methods: ["GET", "POST"],
-        optionsSuccessStatus: 200
+        optionsSuccessStatus: 200,
+        credentials:true
     },
     path: "/chat"
 })
@@ -46,14 +47,16 @@ io.use(extractUser)
 
 io.on('connection', async (socket) => {
         // Register all conversations the user is part of
+
         const conversations = await getAllConversations(socket?.request?.user.id)
         conversations.forEach(conversation => socket.join(conversation?.roomName))
         socket.emit("all_conversations_registered", conversations)
 
-    await socketConnectedToUser(socket?.request?.user?.id, socket.id)
-    const users = await getSocketUsers({})
-    io.emit("new_socket_connection", { users })
-
+        await socketConnectedToUser(socket?.request?.user?.id, socket.id)
+        const users = await getSocketUsers({})
+        
+        io.emit("new_socket_connection", { users })
+        console.log("socket_connected :",socket.id)
     // Store the socket reference in the collection
     socketCollection[socket.id] = socket
 

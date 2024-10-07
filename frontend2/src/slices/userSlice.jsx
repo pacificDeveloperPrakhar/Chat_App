@@ -96,6 +96,7 @@ export const addUserAction = createAsyncThunk(
   export const usersConnectionModify = createAsyncThunk(
     'user/modify',
     async (payload, { rejectWithValue }) => {
+      console.log(payload)
       try {
     // check if the incomming users info is an array
         if (Array.isArray(payload)) {
@@ -178,6 +179,7 @@ export const addUserAction = createAsyncThunk(
           state.error = null;
         })
         .addCase(usersConnectionModify.fulfilled, (state, action) => {
+          console.log(action.payload)
           state.isLoading = false;
           state.users = action.payload; 
           state.error = null;

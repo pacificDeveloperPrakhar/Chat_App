@@ -10,12 +10,7 @@ const server = http.createServer(app);
 const conversationRoute=require("./routes/conversationRoute.js")
 const device=require("express-device");
 app.use(cookieParser())
-app.use((req,res,next)=>{
-    console.log("cookies",req.cookies)
-    console.log(req.originalUrl,":","content-type",req.headers['content-type'])
-    next()
-})
-// Initialize Express app
+// itialize Express app
 app.use(device.capture())
 // this is for the cors ,enabling the cors extension or if u use any sort of extension then it might hinder with how your preflight 
 // response and may give u an error so if u encounter any error while performing an http request make sure to disable it
@@ -44,10 +39,6 @@ app.use(session({
     }
 }));
 // Middleware to parse JSON request bodies
-app.use((req,res,next)=>{
-    console.log(req.session)
-    next()
-})
 app.use(express.json());
 
 // Route handling for profile-related actions

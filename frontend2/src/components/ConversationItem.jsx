@@ -16,30 +16,36 @@ const minutesAgo = new JavascriptTimeAgo('en');
 export default function ConversationItem({ convo, selected_convo ,users}) {
   const unreadMessages = 4;
   const participantsUsers = users.filter((user) => convo.participantsId.includes(user.id));
+  // this function will be used to filter all the fields that are requried to displau on the conversation item
+  function filterConversationDetails(convo){
+    const isGroup=convo.isGroup;
+    const usernames=convo.participantsNames
+    // const tileName=isGroup?`${usernames[0]} and ${usernames.length}+`:`${username[0]}`
+    const tileName=usernames[0]
+    const lastChat={}
+    let chat_last=convo.chats[convo.chats.length - 1]
+    if(chat_last)
+    {
+      lastChat.content=chat_last.text?<span>{chat_last.text}</span>:<i>shared a file</i>
+      lastChat.sender=participantsUsers.find((user)=>user.id==chat_last.senderId).username
+    }
+    else
+    {
+      lastChat.content=<i>start chatting</i>
+      lastChat.new=true
+    }
 
-  function lastChat(convo) {
-    const chat = convo.chats[convo.chats.length - 1];
-    if (!chat) return null;
+    const timespan=!chat_last?minutesAgo.format(Date.now()):minutesAgo.format(new Date(chat_last.sendAt));
 
-    const time = minutesAgo.format(new Date(chat.sendAt));
-    const renderContent = chat.text || (chat.file && "File has been sent by the user") || "Message is unavailable";
-    const user = participantsUsers.find((user) => user.id === chat.senderId);
-    const tileName=!convo.isGroup?participantsUsers.map((user)=>user.username)[0]:`+${participantsUsers.length}`
-    return {
-      time,
-      renderContent,
-      username: user.username,
-      isGroup: convo.isGroup,
-      tileName
-    };
+    const profileImage=convo.profileUrls[0]
+    return{
+      tileName,isGroup,lastChat,timespan,profileImage,usernames
+    }
   }
-
-  const toBeRendered = lastChat(convo);
-  console.log(toBeRendered);
-
+  const toBeRendered=filterConversationDetails(convo)
   return (
     <>
-      {toBeRendered&& (
+      {!toBeRendered.isGroup&& (
         <motion.div
           className={`conversation absolute z-10 ${selected_convo === convo.conversation ? 'bg-blue-100' : ''}`}
           layoutId={`conversation-${convo.conversation}`}
@@ -64,7 +70,7 @@ export default function ConversationItem({ convo, selected_convo ,users}) {
 
           <div className="content self-stretch flex-auto flex-col items-stretch">
             <div className="time_block flex-auto text-end">
-              <span className="time-span">{toBeRendered.time}</span>
+              <span className="time-span">{toBeRendered.timespan}</span>
               <div className="unread_messages flex justify-end pr-5 absolute right-5 -bottom-0 -z-10">
                 {unreadMessages > 0 && (
                   <Badge badgeContent={unreadMessages} color="secondary">
@@ -81,7 +87,14 @@ export default function ConversationItem({ convo, selected_convo ,users}) {
               }}>{toBeRendered.tileName}</span>
               <span className='text-sm ' style={{
                 fontSize:"0.8rem"
-              }}>{`${toBeRendered?.username} : ${toBeRendered?.renderContent}`}</span>
+              }}>{!toBeRendered.lastChat.new 
+                ? (
+                    <>
+                      <span>{toBeRendered.lastChat.sender} : </span>
+                      {toBeRendered.lastChat.content}
+                    </>
+                  ) 
+                : toBeRendered.lastChat.content}</span>
               </span>
               <div className="messageAndMore flex items-center">
                 <AiOutlineDown className="icon-bottom-right" />
@@ -91,7 +104,7 @@ export default function ConversationItem({ convo, selected_convo ,users}) {
         </motion.div>
       )}
 
-      {selected_convo === convo.conversation && (
+      {selected_convo?.id === convo.id && (
         <motion.div
           className="selected_convo"
           layoutId="selected"

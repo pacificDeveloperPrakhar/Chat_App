@@ -10,12 +10,9 @@ const StyledAvatarGroup = styled(AvatarGroup)({
 });
 
 export default function TotalAvatars({users,toberendered}) {
-  console.log("in the avatar")
   const user=useSelector(state=>state.user.user)
   function needToRender(users,toberendered){
-    console.log(user)
     const participantUsers=users.filter(u=>u.id!=user.id);
-    console.log(participantUsers)
     const isGroup=toberendered.isGroup;
     return({
       isGroup,
@@ -23,7 +20,6 @@ export default function TotalAvatars({users,toberendered}) {
     })
   }
   const info=needToRender(users,toberendered)
-  console.log(info)
   return (
     <>
     {
