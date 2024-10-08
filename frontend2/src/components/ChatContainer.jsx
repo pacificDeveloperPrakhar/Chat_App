@@ -3,10 +3,12 @@ import { ImAttachment } from "react-icons/im";
 import { GrSend } from "react-icons/gr";
 import { useSelector } from 'react-redux';
 import EmptyPreviewSlot  from './EmptyPreviewSlot';"./EmptyPreviewSlot"
-import { Avatar } from '@mui/material';"./AvatarOnline&Offline"
+import AvatarGroup  from './AvatarGroup.jsx';
 import { PiDotsThreeOutlineVerticalLight } from "react-icons/pi";
 import { MdOutlineVideoCall } from "react-icons/md";
 import { MdAddCall } from "react-icons/md";
+import { filterConversationDetails } from '../utils/filterConversationItem';
+import  ChatDisplay from "./chats_display_within_container.jsx"
 <PiDotsThreeOutlineVerticalLight />
 
 export default function ChatContainer() {
@@ -23,7 +25,11 @@ export default function ChatContainer() {
     );
     
   conversation&&console.log(participantUsers)
-  if(!conversation)
+  let toBeRendered=null
+  if(conversation)
+  toBeRendered=filterConversationDetails(conversation,participantUsers)
+  console.log(toBeRendered)
+  if(!toBeRendered)
   return (
 <>
 <EmptyPreviewSlot/ >
@@ -36,10 +42,10 @@ export default function ChatContainer() {
             height:"3rem",
             width:"3rem",
         }}>
-        <Avatar size={200}/>
+        <AvatarGroup toberendered={toBeRendered} size={60} users={participantUsers}/>
 
         </div>
-        <h2 className="text-white text-lg font-semibold">John</h2>
+        <h2 className="text-white text-lg font-semibold">{toBeRendered.tileName}</h2>
 
         </div>
         <div className="profile_options flex  space-x-6">
@@ -49,7 +55,8 @@ export default function ChatContainer() {
         </div>
       </header>
       
-      <div className="chat_screen flex-grow bg-transparent p-4 overflow-y-auto">
+      <div className="chat_screen flex-grow relative bg-transparent p-4 overflow-y-auto">
+        <ChatDisplay convo={conversation}></ChatDisplay>
       </div>
       
       <div className="chat_text_input flex items-center px-4 py-2 space-x-3">

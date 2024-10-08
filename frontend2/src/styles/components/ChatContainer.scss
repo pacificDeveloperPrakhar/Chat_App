@@ -32,3 +32,33 @@
         color: white;
     }
 }
+.chat_window_section_display {
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+  .chat_window_section_display::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .chat_window_section_display::-webkit-scrollbar-track {
+    display: none;
+    opacity: 0;
+    border-radius: 10px;
+  }
+  
+  .chat_window_section_display::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #5f62ff, #fe7bf3);
+    border-radius: 10px;
+  }
+  
+  .chat_window_section_display::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ff6b4a, #fc67aa);
+  }
+  
+  .chat_window_section_display {
+ 
+  }
+  

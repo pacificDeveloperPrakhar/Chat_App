@@ -15,7 +15,7 @@ const TotalUserBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-export default function TotalAvatars({ users, toberendered }) {
+export default function TotalAvatars({ users, toberendered ,size}) {
   const user = useSelector((state) => state.user.user);
 
   function needToRender(users, toberendered) {
@@ -42,6 +42,8 @@ export default function TotalAvatars({ users, toberendered }) {
               username={"+30"}
               src={info.users[0]?.profileUrl || toberendered.profileImage} 
               online={false} 
+              // this adjustment in size is to make it possible to set the custom size from the avatar component
+              size={size||40}
             />
           </TotalUserBadge>
         </div>
@@ -51,6 +53,8 @@ export default function TotalAvatars({ users, toberendered }) {
             username={info.users[0]?.username || toberendered.usernames[0]}
             src={info.users[0]?.profileUrl || toberendered.profileImage[0]}
             online={info.users[0]?.userStatus === 'active'}
+            // this adjustment in size is to make it possible to set the custom size from the avatar component
+            size={size||40}
           />
         </div>
       )}
