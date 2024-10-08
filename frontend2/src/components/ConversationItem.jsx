@@ -3,52 +3,17 @@ import { motion } from 'framer-motion';
 import { AiOutlineDown } from "react-icons/ai";
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
-import JavascriptTimeAgo from "javascript-time-ago";
 import AvatarGroup from './AvatarGroup';
 import en from 'javascript-time-ago/locale/en';
+import { filterConversationDetails } from '../utils/filterConversationItem';
 
-JavascriptTimeAgo.addLocale(en);
 
-
-const minutesAgo = new JavascriptTimeAgo('en');
 
 export default function ConversationItem({ convo, selected_convo, users }) {
   const unreadMessages = 4;
   const participantsUsers = users.filter((user) => convo.participantsId.includes(user.id));
-  function filterConversationDetails(convo) {
-    const isGroup = convo.isGroup;
-    const usernames = convo.participantsNames;
-    let tileName = usernames[0];
-
-    if (isGroup) {
-      tileName = `${usernames[0]} and ${usernames.length} more`;
-    }
-
-    const lastChat = {};
-    let chat_last = convo.chats[convo.chats.length - 1];
-    
-    if (chat_last) {
-      lastChat.content = chat_last.text ? <span>{chat_last.text}</span> : <i>shared a file</i>;
-      lastChat.sender = participantsUsers.find((user) => user.id === chat_last.senderId).username;
-    } else {
-      lastChat.content = <i>start chatting</i>;
-      lastChat.new = true;
-    }
-
-    const timespan = !chat_last ? minutesAgo.format(Date.now()) : minutesAgo.format(new Date(chat_last.sendAt));
-    const profileImage = convo.profileUrls;
-
-    return {
-      tileName,
-      isGroup,
-      lastChat,
-      timespan,
-      profileImage,
-      usernames,
-    };
-  }
-
-  const toBeRendered = filterConversationDetails(convo);
+  
+  const toBeRendered = filterConversationDetails(convo,participantsUsers);
 
   return (
     <>

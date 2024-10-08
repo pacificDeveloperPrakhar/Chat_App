@@ -13,9 +13,16 @@ export default function ChatContainer() {
   const conversation=useSelector(state=>state.utils.selectConversation)
   const users=useSelector(state=>state.user.users)
   let participantUsers
+  // when the conversation has been selected i will proceed toward the process of selecting the users from the users state in the redux
+// store and then from there i will render the users
   if(conversation)
-  participantUsers=users.filter(user=>conversation.participants.includes(user))
-  conversation&&console.log(conversation)
+    // this is to select only those users whose id matches with the participant users id in the conversation
+  // some funtion on the array is used when u want to perform only on the random some among the array
+    participantUsers = users.filter(user => 
+      conversation.participants.some(participantUsers => participantUsers.id === user.id)
+    );
+    
+  conversation&&console.log(participantUsers)
   if(!conversation)
   return (
 <>
