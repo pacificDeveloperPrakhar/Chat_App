@@ -56,7 +56,7 @@ export default function ChatContainer() {
       </header>
       
       <div className="chat_screen flex-grow relative bg-transparent p-4 overflow-y-auto">
-        <ChatDisplay convo={conversation}></ChatDisplay>
+        <ChatDisplay convo={conversation} participantUsers={participantUsers}></ChatDisplay>
       </div>
       
       <div className="chat_text_input flex items-center px-4 py-2 space-x-3">

@@ -4,7 +4,7 @@ import { AiOutlineDown } from "react-icons/ai";
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
 import AvatarGroup from './AvatarGroup';
-import en from 'javascript-time-ago/locale/en';
+
 import { filterConversationDetails } from '../utils/filterConversationItem';
 
 

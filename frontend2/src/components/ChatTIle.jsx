@@ -1,19 +1,26 @@
 import React from 'react'
 import Avatar from './AvatarOnline&Offline';
+import { FaRegFileAlt } from "react-icons/fa";
+import formatTime,{formatTimeAgo} from '../utils/timeFormatter';
 
-export default function ChatTile({sender,receiver}) {
+export default function ChatTile({sender,receiver,participantUsers,chat}) {
+    const profileImg=participantUsers.find((u)=>participantUsers.some((user)=>user.id==sender||user.id==receiver)).profileUrl
+    console.log(profileImg)
+
     if(receiver)
   return (
     <div className="flex justify-end items-end gap-2">
-    <span className="text-xs text-white">10:46 AM</span>
+    <span className="text-xs text-white">{formatTimeAgo(chat.sendAt)}</span>
     <div className="bg-purple-500 text-white p-3 rounded-lg max-w-xs">
-      <p>This is a message from the sender.</p>
+    {
+            chat.file?<span className='flex space-x-2'><i className='  text-sm'>file has been shared </i> <FaRegFileAlt /></span>:<span>{chat.text}</span>
+          }
     </div>
     <Avatar
       size={18}
-      username={"You"}
+      username={"nom"}
       src={
-        "https://res.cloudinary.com/dcbyetumq/image/upload/v1726682088/profiles/your-profile.webp"
+        profileImg
       }
     />
   </div>
@@ -25,13 +32,15 @@ export default function ChatTile({sender,receiver}) {
           size={18}
           username={"Dummy"}
           src={
-            "https://res.cloudinary.com/dcbyetumq/image/upload/v1726682088/profiles/tspzdbih10opfnsngpi1.webp"
+            profileImg
           }
         />
         <div className="bg-gray-200 text-black p-3 rounded-lg max-w-xs">
-          <p>This is a message from the receiver.</p>
+        {
+            chat.file?<span className='flex space-x-2'><i className='  text-sm'>file has been shared </i> <FaRegFileAlt /></span>:<span>{chat.text}</span>
+          }
         </div>
-        <span className="text-xs text-white">10:45 AM</span>
+        <span className="text-xs text-white">{formatTimeAgo(chat.sendAt)}</span>
       </div>)
     return <></>
 }
