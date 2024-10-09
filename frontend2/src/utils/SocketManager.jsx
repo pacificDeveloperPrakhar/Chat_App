@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector ,useDispatch} from 'react-redux'
 import socket,{setSocket} from '../socket'
 import { usersConnectionModify } from '../slices/userSlice'
+import { new_conversation_state, new_conversations_registered, state_modify } from '../slices/conversationStateSlice'
 import { restoreConversationsSession,newConversationCreated ,newChatReceived,state_modified} from '../slices/conversationSlice'
 export default function SocketManager() {
   const user=useSelector(state=>state.user.user)
@@ -31,12 +32,19 @@ export default function SocketManager() {
 
         socket.on("create_conversations",function(payload){
           console.log(payload)
+          // whenever the create_conversations event will be triggered this action will be dispatched
+          dispatch(new_conversation_state(payload))
           dispatch(newConversationCreated(payload))
         })
         socket.on("chatMessage",(response)=>{
           console.log(response)
          dispatch(newChatReceived(response))
         })
+         socket.on("state_changed_for_room",(state)=>{
+         const {mount,action}=state
+         dispatch(state_modify(state))
+         })
+
         // first the chat event will be triggerd in the chat layout input area and that message will be received which will then be /
         // causing the change of state of the entire conversation slice
         // its not the most efficient way but i acknowledge that
@@ -52,6 +60,7 @@ export default function SocketManager() {
         socket.off("chatMessage")
         socket.off("state_changed_for_room")
         socket.disconnect()
+
     }
   },[user])
   return (

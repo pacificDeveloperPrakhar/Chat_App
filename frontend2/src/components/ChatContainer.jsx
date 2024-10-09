@@ -32,13 +32,13 @@ export default function ChatContainer() {
   if(conversation)
   toBeRendered=filterConversationDetails(conversation,participantUsers)
   useEffect(()=>{
-   socket.on("state_changed_for_room",(state)=>{
-    const {mount,action}=state
-    if(action=="isTyping"){
-      setIsTyping(mount)
-    }
-   })
-   return ()=>{socket.off("state_changed_for_room")}
+  //  socket.on("state_changed_for_room",(state)=>{
+  //   const {mount,action}=state
+  //   if(action=="isTyping"){
+  //     setIsTyping(mount)
+  //   }
+  //  })
+  //  return ()=>{socket.off("state_changed_for_room")}
   })
   if(!toBeRendered)
   return (
@@ -71,7 +71,7 @@ export default function ChatContainer() {
       </header>
       
       <div className="chat_screen flex-grow relative bg-transparent p-4 overflow-y-auto">
-        <ChatDisplay convo={conversation} participantUsers={participantUsers} isTyping={isTyping}></ChatDisplay>
+        <ChatDisplay convo={conversation} participantUsers={participantUsers} ></ChatDisplay>
       </div>
       
       <div className="chat_text_input flex items-center px-4 py-2 space-x-3">

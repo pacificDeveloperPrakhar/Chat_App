@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "../utils/axiosConfigured"
 import { produce, current } from "immer";
-
+import { new_conversations_registered } from "./conversationStateSlice";
 const conversationState = {
   userIdCurrentlySessioned: localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user")).id
@@ -18,6 +18,8 @@ export const restoreConversationsSession = createAsyncThunk(
     try {
       dispatch(conversationSlice.actions.addConversationsToStore(payload));
       const state = getState();
+      //dispatch an action that will create the corresponding conversation state for each conversation
+       dispatch(new_conversations_registered(state.conversations.conversations))
       const chatsUrl = (conversationId) =>`/conversation/${conversationId}/chats?limit=13&page=1`;
       // prakhar:this code of communication slice is the same one that i did use in the previous frontend project
       const messagesPayload = [];
