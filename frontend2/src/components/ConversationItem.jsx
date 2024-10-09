@@ -17,19 +17,9 @@ export default function ConversationItem({ convo, selected_convo, users }) {
   return (
     <>
       {toBeRendered && (
-        <motion.div
+        <div
           className={`conversation absolute z-10 ${selected_convo === convo.conversation ? 'bg-blue-100' : ''}`}
           layoutId={`conversation-${convo.conversation}`}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{
-            type: 'spring',
-            stiffness: 70,
-            damping: 15,
-            mass: 1,
-            ease: 'easeInOut',
-            duration: 0.2,
-          }}
         >
           <div className="avatar_section justify-center items-center py-5 px-2">
             <AvatarGroup users={participantsUsers} toberendered={toBeRendered} />
@@ -72,7 +62,7 @@ export default function ConversationItem({ convo, selected_convo, users }) {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {selected_convo?.id === convo.id && (
