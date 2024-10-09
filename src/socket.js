@@ -73,6 +73,7 @@ io.on('connection', async (socket) => {
     })
     // to handle the typing and and the in chat feature
     socket.on("state_changed_for_room",(state_respnse)=>{
+        console.log("state is being changed")
         socket.in(state_respnse.conversationId).emit("state_changed_for_room",state_respnse)
     })
     // Handle disconnection

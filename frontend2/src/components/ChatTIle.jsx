@@ -5,7 +5,6 @@ import formatTime,{formatTimeAgo} from '../utils/timeFormatter';
 
 export default function ChatTile({sender,receiver,participantUsers,chat}) {
     const profileImg=participantUsers.find((u)=>participantUsers.some((user)=>user.id==sender||user.id==receiver)).profileUrl
-    console.log(profileImg)
 
     if(receiver)
   return (

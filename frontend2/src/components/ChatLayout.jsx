@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet,Link } from 'react-router-dom';
 import { IoIosSettings } from 'react-icons/io';
 import { IoIosChatboxes } from "react-icons/io";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import Avatar from"./AvatarOnline&Offline"
+import socket from "../socket"
 import SocketManager from '../utils/SocketManager';
 import { useDispatch,useSelector } from 'react-redux';
 import { logoutAction } from '../slices/userSlice';
+
 export default function ChatLayout() {
   const {profileUrl,username}=useSelector(state=>state.user.user)
   const dispatch=useDispatch()
+  const conversation=useSelector(state=>state.utils.selectConversation)
+  const user=useSelector(state=>state.user.user)
+  function handleKeydown(event) {
+    if(conversation)
+    socket.emit("state_changed_for_room",{
+      conversationId:conversation.id,
+      host:user.id,
+      action:"isTyping"
+    })
+
+  }
   function logoutHandler(){
     // first delete the user key value pair from the localStorage from the browser
     const user=JSON.parse(localStorage.getItem("user"))
@@ -19,6 +32,14 @@ export default function ChatLayout() {
     //here i will dispatch an action that will hit the route that will cause the deletion of the session document from the server mongodb 
     dispatch(logoutAction())
   }
+  useEffect(()=>{
+    
+    // Add the event listener
+    window.addEventListener('keydown', handleKeydown);
+    
+    // Later, you can remove the event listener like this:
+    ()=>window.removeEventListener('keydown', handleKeydown);
+  })
   return (
     <>
     <div className='ChatLayout flex h-full'>

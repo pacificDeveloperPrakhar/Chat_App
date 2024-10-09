@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ImAttachment } from "react-icons/im";
 import { GrSend } from "react-icons/gr";
 import { useSelector } from 'react-redux';
@@ -8,12 +8,15 @@ import { PiDotsThreeOutlineVerticalLight } from "react-icons/pi";
 import { MdOutlineVideoCall } from "react-icons/md";
 import { MdAddCall } from "react-icons/md";
 import { filterConversationDetails } from '../utils/filterConversationItem';
-import  ChatDisplay from "./chats_display_within_container.jsx"
+import  ChatDisplay from "./chats_display_within_container.jsx";
+import socket from "../socket.jsx"
 <PiDotsThreeOutlineVerticalLight />
 
 export default function ChatContainer() {
+  const [message,setMessage]=useState("")
   const conversation=useSelector(state=>state.utils.selectConversation)
   const users=useSelector(state=>state.user.users)
+  const user=useSelector(state=>state.user.user)
   let participantUsers
   // when the conversation has been selected i will proceed toward the process of selecting the users from the users state in the redux
 // store and then from there i will render the users
@@ -23,12 +26,10 @@ export default function ChatContainer() {
     participantUsers = users.filter(user => 
       conversation.participants.some(participantUsers => participantUsers.id === user.id)
     );
-    
-  conversation&&console.log(participantUsers)
+  
   let toBeRendered=null
   if(conversation)
   toBeRendered=filterConversationDetails(conversation,participantUsers)
-  console.log(toBeRendered)
   if(!toBeRendered)
   return (
 <>
@@ -65,9 +66,15 @@ export default function ChatContainer() {
           type="text"
           className="flex-grow  rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-purple-950 text-white"
           placeholder="Type a message..."
+          onChange={(e)=>setMessage(e.target.value)}
         />
+        <span onClick={()=>{
+           socket.emit("chatMessage", { text: message, userId: user.id, conversationId: conversation.id })
+        }}>
         <GrSend className="chat_icons" />
+        </span>
       </div>
     </div>
   );
 }
+// socket.emit("chatMessage", { text: message, userId: user.id, conversationId: selectedConversation.id });

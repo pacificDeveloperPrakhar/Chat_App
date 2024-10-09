@@ -143,6 +143,6 @@ exports.storeChatAndEmit=async function(socket,io,mssg){
     message.text=mssg.text;
    if(mssg.file)
     message.file=mssg.file;
-  const resultingMessage=(await db.insert(messages).values(message).returning({id:messages.id,text:messages.text,file:messages.file,senderId:messages.senderId,conversationId:messages.conversationsId,type:messages.type,profilePic:messages.profilePic}))[0]
+  const resultingMessage=(await db.insert(messages).values(message).returning({id:messages.id,text:messages.text,file:messages.file,senderId:messages.senderId,conversationId:messages.conversationsId,type:messages.type,profilePic:messages.profilePic,readBy:messages.readBy,targettedUser:messages.targettedUser,sendAt:messages.sendAt}))[0]
   io.in(conversation.roomName).emit("chatMessage",resultingMessage)
 }

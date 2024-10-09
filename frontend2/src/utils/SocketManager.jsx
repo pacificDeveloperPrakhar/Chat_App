@@ -2,15 +2,14 @@ import React, { useEffect } from 'react'
 import { useSelector ,useDispatch} from 'react-redux'
 import socket,{setSocket} from '../socket'
 import { usersConnectionModify } from '../slices/userSlice'
-import { restoreConversationsSession,newConversationCreated } from '../slices/conversationSlice'
+import { restoreConversationsSession,newConversationCreated ,newChatReceived} from '../slices/conversationSlice'
 export default function SocketManager() {
   const user=useSelector(state=>state.user.user)
   const dispatch=useDispatch()
   useEffect(()=>{
-    console.log(!(user&&user.is_verified))
+
     if(!(user&&user.is_verified))
     {
-        console.log("socket will not be connected")
         return
     }
     //    first i will pass the user whole info in form of handshake for the handshake procedure then it will modify the
@@ -34,10 +33,23 @@ export default function SocketManager() {
           console.log(payload)
           dispatch(newConversationCreated(payload))
         })
+        // first the chat event will be triggerd in the chat layout input area and that message will be received which will then be /
+        // causing the change of state of the entire conversation slice
+        // its not the most efficient way but i acknowledge that
+        socket.on("chatMessage",(response)=>{
+          console.log(response)
+         dispatch(newChatReceived(response))
+        })
+        socket.on("state_changed_for_room",response=>{
+          console.log("state has been changed")
+          console.log(response)
+        })
 
     return ()=>{
         socket.off("new_socket_connection")
         socket.off("all_conversations_registered")
+        socket.off("chatMessage")
+        socket.off("state_changed_for_room")
         socket.disconnect()
     }
   },[user])

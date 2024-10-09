@@ -3,6 +3,7 @@ import { useSelector,useDispatch } from 'react-redux';
 import {Navigate} from "react-router-dom";
 function Registration_phase(){
     const [userVerified,setUserVerififed]=useState("not signed")
+    
     const user=useSelector(state=>state.user.user)
     useEffect(()=>{
         if(user&&user.is_verified)
