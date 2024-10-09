@@ -33,16 +33,18 @@ export default function SocketManager() {
           console.log(payload)
           dispatch(newConversationCreated(payload))
         })
-        // first the chat event will be triggerd in the chat layout input area and that message will be received which will then be /
-        // causing the change of state of the entire conversation slice
-        // its not the most efficient way but i acknowledge that
         socket.on("chatMessage",(response)=>{
           console.log(response)
          dispatch(newChatReceived(response))
         })
-        socket.on("state_changed_for_room",response=>{
-          dispatch(state_modified(response))
-        })
+        // first the chat event will be triggerd in the chat layout input area and that message will be received which will then be /
+        // causing the change of state of the entire conversation slice
+        // its not the most efficient way but i acknowledge that
+        // this logic was not working hence i do be commenting out this code segment and see if i could fix it by doing some modification
+
+        // socket.on("state_changed_for_room",response=>{
+        //   dispatch(state_modified(response))
+        // })
 
     return ()=>{
         socket.off("new_socket_connection")
