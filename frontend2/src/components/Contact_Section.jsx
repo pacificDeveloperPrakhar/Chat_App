@@ -62,10 +62,10 @@ export default function Contact_Section() {
                         <motion.li
                           key={convo.id}
                           className="relative"
-                          initial={{ opacity: 0, x: -500 }}
+                          initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 500 }}
-                          transition={{ type: 'spring', stiffness: 100, damping: 15 }}
+                          exit={{ opacity: 0, x: 10 }}
+                          transition={{ type: 'spring', stiffness: 100, damping: 15 ,duration:0.02}}
                           onClick={() => handleSelectConversation(convo)}
                         >
                           <ConversationItem

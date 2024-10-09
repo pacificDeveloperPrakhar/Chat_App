@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ImAttachment } from "react-icons/im";
 import { GrSend } from "react-icons/gr";
 import { useSelector } from 'react-redux';
@@ -15,6 +15,7 @@ import socket from "../socket.jsx"
 export default function ChatContainer() {
   const [message,setMessage]=useState("")
   const conversation=useSelector(state=>state.utils.selectConversation)
+  const [isTyping,setIsTyping]=useState(false)
   const users=useSelector(state=>state.user.users)
   const user=useSelector(state=>state.user.user)
   let participantUsers
@@ -30,6 +31,15 @@ export default function ChatContainer() {
   let toBeRendered=null
   if(conversation)
   toBeRendered=filterConversationDetails(conversation,participantUsers)
+  useEffect(()=>{
+   socket.on("state_changed_for_room",(state)=>{
+    const {mount,action}=state
+    if(action=="isTyping"){
+      setIsTyping(mount)
+    }
+   })
+   return ()=>{socket.off("state_changed_for_room")}
+  })
   if(!toBeRendered)
   return (
 <>
@@ -37,7 +47,7 @@ export default function ChatContainer() {
 </>)
   return (
     <div className=' absolute inset-0 flex flex-col chat'>
-      <header className="chat_header bg-green-500 p-4 flex items-center justify-between shadow-md">
+      <header className="chat_header bg-green-500 p-4 flex items-center justify-between shadow-md relative">
         <div className="profile flex space-x-6 items-center">
         <div className="avatar " style={{
             height:"3rem",
@@ -54,10 +64,14 @@ export default function ChatContainer() {
         <MdAddCall className='chat_icons'/>
         <PiDotsThreeOutlineVerticalLight className='chat_icons'/>
         </div>
+        {isTyping&&<span className='text-green-500 absolute ' style={{
+          top:"3.2rem",
+          left:"6rem"
+        }}>is typing ...</span>}
       </header>
       
       <div className="chat_screen flex-grow relative bg-transparent p-4 overflow-y-auto">
-        <ChatDisplay convo={conversation} participantUsers={participantUsers}></ChatDisplay>
+        <ChatDisplay convo={conversation} participantUsers={participantUsers} isTyping={isTyping}></ChatDisplay>
       </div>
       
       <div className="chat_text_input flex items-center px-4 py-2 space-x-3">

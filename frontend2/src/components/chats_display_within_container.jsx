@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import ChatTile from './ChatTIle';
 import socket from "../socket"
+import Lottie from "lottie-react";
+import LottieFileChat from "../assets/chat_load.json"
 import { useSelector } from 'react-redux';
 // whenever this component wil umount i will cause a state_changed_name event trigger this will be used to 
 // create that in chat feature 
-export default function ChatsDisplayWithinContainer({ convo,participantUsers}) {
+export default function ChatsDisplayWithinContainer({ convo,participantUsers,isTyping}) {
   // when component will mount i will trigger the in chat event trigger using socket
     const convo_temp=useSelector(state=>state.conversations.conversations.find(c=>c.id==convo.id))
     const user=useSelector(state=>state.user.user)
@@ -37,6 +39,14 @@ export default function ChatsDisplayWithinContainer({ convo,participantUsers}) {
         if(chat.senderId!=user.id)
         return <ChatTile sender={chat.senderId} participantUsers={participantUsers} chat={chat}/>
         })}
+        {isTyping&&<Lottie
+        animationData={LottieFileChat}
+        loop={true}
+        className="player bg-transparent"
+        style={{
+          width:"6.3rem"
+        }}
+      />}
       </div>
     </div>
   );
