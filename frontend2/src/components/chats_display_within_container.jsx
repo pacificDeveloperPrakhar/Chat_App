@@ -12,7 +12,8 @@ export default function ChatsDisplayWithinContainer({ convo,participantUsers}) {
     socket.emit("state_changed_for_room",{
       conversationId:convo_temp.id,
       host:user.id,
-      action:"inChat"
+      action:"inChat",
+      mount:true
     })
     useEffect(()=>{
       return ()=>{
@@ -21,7 +22,8 @@ export default function ChatsDisplayWithinContainer({ convo,participantUsers}) {
           socket.emit("state_changed_for_room",{
             conversationId:convo_temp.id,
             host:user.id,
-            action:"unmount inChat"
+            action:"inChat",
+            event:false
           })
       }
     })

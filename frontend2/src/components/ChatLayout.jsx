@@ -14,14 +14,29 @@ export default function ChatLayout() {
   const dispatch=useDispatch()
   const conversation=useSelector(state=>state.utils.selectConversation)
   const user=useSelector(state=>state.user.user)
-  function handleKeydown(event) {
-    if(conversation)
+  let timeoutId;
+  function unmountTyping(){
+    console.log("unmounted typing")
     socket.emit("state_changed_for_room",{
       conversationId:conversation.id,
       host:user.id,
-      action:"isTyping"
+      action:"isTyping",
+      mount:false
     })
-
+  }
+  function handleKeydown(event) {
+    console.log("typing unmount")
+    if(conversation){
+      clearTimeout(timeoutId)
+      socket.emit("state_changed_for_room",{
+        conversationId:conversation.id,
+        host:user.id,
+        action:"isTyping",
+        mount:true
+      })
+      timeoutId=setTimeout(unmountTyping,800)
+      
+    }
   }
   function logoutHandler(){
     // first delete the user key value pair from the localStorage from the browser
@@ -38,7 +53,9 @@ export default function ChatLayout() {
     window.addEventListener('keydown', handleKeydown);
     
     // Later, you can remove the event listener like this:
-    ()=>window.removeEventListener('keydown', handleKeydown);
+    ()=>{window.removeEventListener('keydown', handleKeydown);
+      clearTimeout(timeoutId)
+    }
   })
   return (
     <>

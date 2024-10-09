@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector ,useDispatch} from 'react-redux'
 import socket,{setSocket} from '../socket'
 import { usersConnectionModify } from '../slices/userSlice'
-import { restoreConversationsSession,newConversationCreated ,newChatReceived} from '../slices/conversationSlice'
+import { restoreConversationsSession,newConversationCreated ,newChatReceived,state_modified} from '../slices/conversationSlice'
 export default function SocketManager() {
   const user=useSelector(state=>state.user.user)
   const dispatch=useDispatch()
@@ -41,8 +41,7 @@ export default function SocketManager() {
          dispatch(newChatReceived(response))
         })
         socket.on("state_changed_for_room",response=>{
-          console.log("state has been changed")
-          console.log(response)
+          dispatch(state_modified(response))
         })
 
     return ()=>{

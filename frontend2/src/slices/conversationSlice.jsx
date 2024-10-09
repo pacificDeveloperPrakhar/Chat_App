@@ -116,8 +116,8 @@ const conversationSlice = createSlice({
             isLoading: false,
             error: null,
             isAdding: false,
-            isTyping: null,
-            inChat: null,
+            isTyping: [],
+            inChat: [],
             isGroup,
             profileUrls,
             doesHaveProfileUrl,
@@ -202,8 +202,8 @@ const conversationSlice = createSlice({
             isLoading: false,
             error: null,
             isAdding: false,
-            isTyping: null,
-            inChat: null,
+            isTyping: [],
+            inChat: [],
             isGroup,
             profileUrls,
             doesHaveProfileUrl,
@@ -217,6 +217,42 @@ const conversationSlice = createSlice({
         ...current(previousState),
         conversations
       }
+    },
+    // this reducer will be used to modify the state whenever user starts typing or it is in chat
+    state_modified:function(previousState,{payload}){
+      const {mount,host,action,conversationId}=payload
+      const conversation={...current(previousState).conversations.find((convo=>convo.id==conversationId))}
+      if(mount)
+      {
+        switch (action){
+          case "isTyping":
+            if(!conversation.isTyping.find(user=>user==host)){
+              const isTyping=[host,...conversation.isTyping]
+              conversation.isTyping=isTyping
+            }
+          break;
+          case "inChat":
+            if(!conversation.inChat.find(user=>user==host)){
+              const inChat=[host,...conversation.inChat]
+              conversation.inChat=inChat
+          }
+        }
+      }
+      else
+      {
+        switch(action){
+          case "isTyping":
+            const isTyping=conversation.isTyping.filter(u=>u!==host)
+            console.log(isTyping)
+            conversation.isTyping=isTyping
+          break;
+          case "inChat":
+            const inChat=conversation.inChat.filter(u=>u!==host)
+
+            conversation.inChat=inChat
+        }
+      }
+      previousState.conversations= [...current(previousState.conversations).filter(c=>c.id!=conversation.id),conversation]
     }
     
   },
@@ -280,6 +316,6 @@ const conversationSlice = createSlice({
   },
 });
 
-export const { addConversationsToStore, newChatReceived ,newConversationCreated} =
+export const { addConversationsToStore, newChatReceived ,newConversationCreated,state_modified} =
   conversationSlice.actions;
 export default conversationSlice.reducer;

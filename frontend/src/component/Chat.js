@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback ,useRef} from "react";
 import { useSelector,useDispatch } from "react-redux";
-import io from "socket.io-client";
 import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';

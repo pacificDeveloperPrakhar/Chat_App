@@ -14,7 +14,6 @@ export default function ConversationItem({ convo, selected_convo, users }) {
   const participantsUsers = users.filter((user) => convo.participantsId.includes(user.id));
   
   const toBeRendered = filterConversationDetails(convo,participantsUsers);
-
   return (
     <>
       {toBeRendered && (

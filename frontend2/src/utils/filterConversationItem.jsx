@@ -24,7 +24,8 @@ function filterConversationDetails(convo,participantsUsers) {
 
     const timespan = !chat_last ? minutesAgo.format(Date.now()) : minutesAgo.format(new Date(chat_last.sendAt));
     const profileImage = convo.profileUrls;
-
+    const isTyping=participantsUsers.filter(u=>convo.isTyping.includes(u.id)).map(u=>u.username)||[]
+    const inChat=participantsUsers.filter(u=>convo.inChat.includes(u.id)).map(u=>u.username)||[]
     return {
       tileName,
       isGroup,
@@ -32,6 +33,8 @@ function filterConversationDetails(convo,participantsUsers) {
       timespan,
       profileImage,
       usernames,
+      isTyping,
+      inChat
     };
   }
 
