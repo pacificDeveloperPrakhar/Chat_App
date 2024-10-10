@@ -15,7 +15,16 @@ import socket from "../socket.jsx"
 export default function ChatContainer() {
   const [message,setMessage]=useState("")
   const conversation=useSelector(state=>state.utils.selectConversation)
-  const [isTyping,setIsTyping]=useState(false)
+  //this code logic did failed
+  //{
+    //this conversation_state will be used along with the users object to render the typing or in chat text 
+  //telling who is typing such as john@123 is typing if there are two or more than two 
+  // implementing just for the is typing right now
+  //
+  //
+  //1--first checking if the person has done selecting the conversation which he wants to chat
+//}
+  const [isTyping,setIsTyping]=useState(null)
   const users=useSelector(state=>state.user.users)
   const user=useSelector(state=>state.user.user)
   let participantUsers
@@ -32,13 +41,31 @@ export default function ChatContainer() {
   if(conversation)
   toBeRendered=filterConversationDetails(conversation,participantUsers)
   useEffect(()=>{
-  //  socket.on("state_changed_for_room",(state)=>{
-  //   const {mount,action}=state
-  //   if(action=="isTyping"){
-  //     setIsTyping(mount)
-  //   }
-  //  })
-  //  return ()=>{socket.off("state_changed_for_room")}
+    // first: the client will listen for any emit from the server to this socket
+    // second: conversationId,action,username,mount will be destructured from the object that is incomming from the server
+    //third:after that if the action is saying isTyping and the mount is true
+    //fourth:then ChatContainer component's isTyping state set it to the username whose state has been send the latest
+    //fifth:if the mount is otherwise then set the isTyping to false
+    //do the same for the inChat as well
+    socket.on("state_changed_for_room",(state)=>{
+      console.log(state)
+      const {conversationId,action,mount,username,profilePic}=state
+      if(conversationId!=conversation.id)
+        return
+      switch(action){
+        case "isTyping":
+          if(mount){
+            setIsTyping({username,profilePic})
+          }
+          else
+          {
+            setIsTyping(null)
+          }
+      }
+    })
+   return ()=>{
+    socket.off("state_changed_for_room")
+   }
   })
   if(!toBeRendered)
   return (
@@ -64,14 +91,14 @@ export default function ChatContainer() {
         <MdAddCall className='chat_icons'/>
         <PiDotsThreeOutlineVerticalLight className='chat_icons'/>
         </div>
-        {isTyping&&<span className='text-green-500 absolute ' style={{
+        {isTyping?.username&&<span className='text-green-500 absolute ' style={{
           top:"3.2rem",
           left:"6rem"
-        }}>is typing ...</span>}
+        }}>{`${isTyping.username} is typing`}</span>}
       </header>
       
       <div className="chat_screen flex-grow relative bg-transparent p-4 overflow-y-auto">
-        <ChatDisplay convo={conversation} participantUsers={participantUsers} ></ChatDisplay>
+        <ChatDisplay convo={conversation} participantUsers={participantUsers} isTyping={isTyping}></ChatDisplay>
       </div>
       
       <div className="chat_text_input flex items-center px-4 py-2 space-x-3">
@@ -91,4 +118,3 @@ export default function ChatContainer() {
     </div>
   );
 }
-// socket.emit("chatMessage", { text: message, userId: user.id, conversationId: selectedConversation.id });

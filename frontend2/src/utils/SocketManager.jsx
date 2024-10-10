@@ -40,10 +40,17 @@ export default function SocketManager() {
           console.log(response)
          dispatch(newChatReceived(response))
         })
-         socket.on("state_changed_for_room",(state)=>{
-         const {mount,action}=state
-         dispatch(state_modify(state))
-         })
+        //  for some reason the modification of the state of conversation is casuing infinite render
+        //
+        //
+       //this piece of code has been commented out
+       //
+        //  socket.on("state_changed_for_room",(state)=>{
+        //  const {mount,action}=state
+        //  dispatch(state_modify(state))
+        //  })
+         //
+         //
 
         // first the chat event will be triggerd in the chat layout input area and that message will be received which will then be /
         // causing the change of state of the entire conversation slice
@@ -58,7 +65,6 @@ export default function SocketManager() {
         socket.off("new_socket_connection")
         socket.off("all_conversations_registered")
         socket.off("chatMessage")
-        socket.off("state_changed_for_room")
         socket.disconnect()
 
     }

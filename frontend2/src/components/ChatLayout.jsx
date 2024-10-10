@@ -21,7 +21,9 @@ export default function ChatLayout() {
       conversationId:conversation.id,
       host:user.id,
       action:"isTyping",
-      mount:false
+      mount:false,
+      username:user.username,
+      profilePic:user.profileUrl
     })
   }
   function handleKeydown(event) {
@@ -32,7 +34,9 @@ export default function ChatLayout() {
         conversationId:conversation.id,
         host:user.id,
         action:"isTyping",
-        mount:true
+        mount:true,
+        username:user.username,
+        profilePic:user.profileUrl
       })
       timeoutId=setTimeout(unmountTyping,800)
       
