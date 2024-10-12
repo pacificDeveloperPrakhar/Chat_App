@@ -10,6 +10,7 @@ module.exports = defineConfig({
         user: process.env.postgres_db_user,
         password: process.env.postgres_db_password,
         database: process.env.postgres_db,
+        port:process.env.postgres_db_port
     },
     verbrose:true,
     strict:true

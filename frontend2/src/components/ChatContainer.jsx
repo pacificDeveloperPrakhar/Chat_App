@@ -101,7 +101,7 @@ export default function ChatContainer() {
         <ChatDisplay convo={conversation} participantUsers={participantUsers} isTyping={isTyping}></ChatDisplay>
       </div>
       
-      <div className="chat_text_input flex items-center px-4 py-2 space-x-3">
+      <div className="chat_text_input flex items-center px-4 py-2 space-x-3 prakhar_app">
         <ImAttachment className="chat_icons attach" />
         <input
           type="text"

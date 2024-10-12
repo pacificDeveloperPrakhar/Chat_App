@@ -4,3 +4,6 @@ config.env
 /frontend2/node_modules
 /frontend/dist
 /frontend/.parcel-cache
+/credentials_postgres_local.txt
+/credentials_postgres_supabase.txt
+/credentials_mongodb.txt

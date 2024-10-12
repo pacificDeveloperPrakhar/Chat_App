@@ -310,7 +310,7 @@ const conversationSlice = createSlice({
       conversation.isAdding=false;
       conversation.isLoading=false;
       conversation.chatRetrieved=true;
-      conversation.chats=[...current(conversation.chats),...chatsRetrieved]
+      conversation.chats=[...chatsRetrieved,...current(conversation.chats)]
       conversation.chatsLength=conversation.chatsLength+chatsRetrieved.length
       conversation.chatLoadCounter=conversation.chatLoadCounter+1;
 
