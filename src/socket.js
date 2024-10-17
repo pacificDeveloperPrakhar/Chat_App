@@ -11,7 +11,7 @@ const socketCollection = {}
 // Start Socket.IO server
 const io = Socket(server, {
     cors: {
-        origin: ['http://localhost:3000','http://localhost:1234'],
+        origin: ['http://127.0.0.1:3000','http://127.0.0.1:1234',"/"],
         methods: ["GET", "POST"],
         optionsSuccessStatus: 200,
         credentials:true

@@ -63,8 +63,8 @@ export const restoreConversationsSession = createAsyncThunk(
   }
 );
 export const chatLoadMessages=createAsyncThunk("conversations/chatLoadOnScroll",async function(payload,{rejectWithValue,getState,dispatch}){
-  console.log("counter 0")
   const {id,chatLoadCounter,chatRetrieved}=payload
+  console.log(chatLoadCounter)
   const chatsUrl = (conversationId,loadCounter) =>
     `/conversation/${conversationId}/chats?limit=13&page=${loadCounter}`;
   try{

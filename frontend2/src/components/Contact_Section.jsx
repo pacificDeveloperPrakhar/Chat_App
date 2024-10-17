@@ -45,7 +45,7 @@ export default function Contact_Section() {
       </AnimatePresence>
 
       {/* People conversations and buttons */}
-      <div id="people_convos_and_buttons" className="flex flex-col">
+      <div id="" className="flex flex-col overflow-y-scroll people_convos_and_buttons">
 
         <AnimatePresence>
           {/* If openNewChatNav is true, show SelectPeopleFooter */}
@@ -53,7 +53,7 @@ export default function Contact_Section() {
           
           {/* If openNewChatNav is false, show conversation list */}
           {!openNewChatNav ? (
-            <motion.ul layout className=' '>
+            <motion.ul layout className=''>
               <>
                 {users.length!=0 && (
                   <>

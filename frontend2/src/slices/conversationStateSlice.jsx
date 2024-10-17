@@ -75,7 +75,8 @@ const conversationStateSlice=createSlice({
             iconChatUrl:[],
             isTyping:[],
             inChat:[],
-            chatsLength:chats.length
+            chatsLength:chats.length,
+            chatLoadCounter:1
 
         }}
 
@@ -94,7 +95,8 @@ const conversationStateSlice=createSlice({
             isTyping:[],
             inChat:[],
             unread:0,
-            chatsLength:convo.chats.length
+            chatsLength:convo.chats.length,
+            chatLoadCounter:1
                 }
                 return convo_template
             });

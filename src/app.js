@@ -5,6 +5,7 @@ const cookieParser=require("cookie-parser")
 const cors = require('cors');
 const MongoStore = require('connect-mongo');
 const app = express();
+const path=require("path")
 const http = require("http");
 const server = http.createServer(app); 
 const conversationRoute=require("./routes/conversationRoute.js")
@@ -15,7 +16,7 @@ app.use(device.capture())
 // this is for the cors ,enabling the cors extension or if u use any sort of extension then it might hinder with how your preflight 
 // response and may give u an error so if u encounter any error while performing an http request make sure to disable it
 app.use(cors({
-    origin: ['http://localhost:3000','http://localhost:1234'],  // i have changed it to allow it to accept request from one specific source only
+    origin: ['http://127.0.0.1:3000','http://127.0.0.1:1234'],  // i have changed it to allow it to accept request from one specific source only
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  
     allowedHeaders: ['Content-Type', 'Authorization'],  
     credentials: true ,
@@ -44,6 +45,8 @@ app.use(express.json());
 // Route handling for profile-related actions
 app.use("/profiles", profileRoutes);
 app.use("/conversation", conversationRoute);
+app.use("/static_files",express.static(path.resolve(__dirname,"../frontend2/public_dir")))
+console.log(path.resolve(__dirname,"../frontend2/public_dir"))
 //for if client encounters the 404 error
 app.use((req,res,next)=>{
     res.status(404).json({

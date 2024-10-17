@@ -9,6 +9,7 @@ exports.getAllChatsInAConversation=catchAsync(async function(req,res,next){
    let {limit,page}=req.query;
    limit=Number(limit);
    page=Number(page)
+   console.log(page,limit)
    let conversation,messages
    if(conversationId)
    conversation=db.select().from(conversations).where(eq(conversations.id,conversationId))
